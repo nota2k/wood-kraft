@@ -99,6 +99,10 @@ const products = [
     grid-template-rows: auto 110px;
     grid-template-columns: 2fr 1fr;
     flex-direction: column;
+    border: 2px solid var(--color-marron-light);
+    --line-offset: 2px;
+    --line-thickness: 2px;
+
 
     &:nth-child(4) {
       grid-column: 2 / span 2;
@@ -125,7 +129,7 @@ const products = [
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-    border: 2px solid var(--color-sable);
+    outline: var(--line-thickness) solid var(--color-marron-light);
     
   }
 
@@ -134,10 +138,10 @@ const products = [
     display: flex;
     align-items: center;
     flex-grow: 2;
-    font-size: var(--font-lg);
+    font-size: var(--font-md);
     color: var(--color-marron);
     font-weight: 300;
-    border-right: 2px solid var(--color-sable);
+    outline: 2px solid var(--color-marron-light);
   }
   
   &__price-wrapper {
@@ -147,7 +151,7 @@ const products = [
     align-items: center;
     justify-content: center;
     min-width: 130px;
-    font-size: var(--font-lg);
+    font-size: var(--font-md);
     color: var(--color-marron);
     font-weight: 300;
   }

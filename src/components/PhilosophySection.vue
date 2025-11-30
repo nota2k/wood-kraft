@@ -4,8 +4,8 @@
       <div class="philosophy__image-wrapper">
         <h2 class="philosophy__title-overlay">PHILOSOPHY</h2>
         <img 
-          src="https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&h=1000&fit=crop" 
-          alt="Atelier d'ébénisterie" 
+          src="@/assets/images/home-philosophy.png" 
+          alt="Philosophy" 
           class="philosophy__image"
         />
       </div>

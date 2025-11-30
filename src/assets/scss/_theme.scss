@@ -9,3 +9,8 @@ body,html {
 body {
     background-color: var(--color-beige);
 }
+
+main > *{
+    max-width: var(--max-width);
+    margin: 0 auto;
+}

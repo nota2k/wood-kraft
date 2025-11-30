@@ -1,6 +1,7 @@
 :root { 
     --color-beige: #F5F4EC;
     --color-marron: #7A572F;
+    --color-marron-light: #AFA865;
     --color-sable: #E2DFC7;
     --color-vert-gris:#7DA08B;
     --color-vert: #AED3AA;
@@ -26,4 +27,6 @@
     --large-button:300px;
     --primary-color:var(--color-vert);
     --secondary-color:var(--color-beige);
+
+    --max-width: 1200px;
 }
