@@ -11,4 +11,13 @@
     --padding-sm: clamp(1.5rem, 2vw, 2rem);      /* 24-32px - Espacement moyen */
     --padding-md: clamp(3rem, 4vw, 4rem);       /* 48-64px - Grand espacement */
     --padding-lg: clamp(4.5rem, 6vw, 6rem);      /* 72-96px - Très grand espacement */
+
+    /* Font size variables */
+    --font-xs: clamp(0.75rem, 0.8vw, 0.875rem);        /* 12-14px - Très petit texte */
+    --font-sm: clamp(0.875rem, 1vw, 1rem);             /* 14-16px - Petit texte */
+    --font-md: clamp(1rem, 1.2vw, 1.25rem);           /* 16-20px - Texte de base */
+    --font-lg: clamp(1.5rem, 2.5vw, 2rem);            /* 24-32px - Sous-titres */
+    --font-xl: clamp(6.5rem, 5vw, 7rem);              /* 40-64px - Titres de section */
+    --font-xxl: clamp(4rem, 10vw, 8rem);              /* 64-128px - Titres hero */
+    --font-hero: clamp(6rem, 15vw, 12rem);           /* 96-192px - Très grands titres */
 }

@@ -11,6 +11,13 @@
         />
         </div>
       </div>
+      <div class="about-us__second-image-wrapper">
+        <img 
+          src="@/assets/images/home-aboutus-02.png" 
+          alt="Artisan travaillant le bois" 
+          class="about-us__second-image"
+        />
+      </div>
       <div class="about-us__content">
         <p class="about-us__text">
           Derrière chaque création se cache un ébéniste passionné, amoureux du travail manuel et du détail. 
@@ -73,8 +80,17 @@
       width: 100%;
       height: 100%;
       z-index: 1;
-    }
+    }    
   }
+
+  &__second-image {
+      position: absolute;
+      width: 100%;
+      max-width: 400px;
+      right: 8%;
+      height: 100%;
+      object-fit: cover;
+    }
   
   &__content {
     display: flex;

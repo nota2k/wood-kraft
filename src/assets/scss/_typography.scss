@@ -60,3 +60,10 @@
     font-weight: 400;
     font-style: italic;
 }
+
+@font-face {
+    font-family: 'Rokurou';
+    src: url('@/assets/fonts/Rokurou.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}

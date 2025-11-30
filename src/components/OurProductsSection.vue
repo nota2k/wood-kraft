@@ -12,8 +12,12 @@
             />
           </div>
           <div class="our-products__info">
-            <p class="our-products__label">Product</p>
-            <p class="our-products__price">{{ product.price }} €</p>
+            <div class="our-products__label-wrapper">
+              <p class="our-products__label">Product</p>
+            </div>
+            <div class="our-products__price-wrapper">
+              <p class="our-products__price">{{ product.price }} €</p>
+            </div>
           </div>
         </div>
       </div>
@@ -58,9 +62,10 @@ const products = [
   }
   
   &__title {
-    font-family: 'Lovan', serif;
-    font-size: clamp(3rem, 6vw, 5rem);
-    color: var(--color-marron);
+    font-family: 'Rokurou', sans-serif;
+    font-weight: 300;
+    font-size: var(--font-xl);
+    color: var(--color-sable);
     margin-bottom: 4rem;
     text-align: center;
   }
@@ -68,20 +73,21 @@ const products = [
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
+    grid-template-rows: repeat(3, minmax(450px, 1fr));
     margin-bottom: 3rem;
   }
   
   &__item {
-    display: flex;
+    display: grid;
+    grid-template-rows: auto 70px;
+    grid-template-columns: 2fr 1fr;
     flex-direction: column;
   }
   
   &__image-wrapper {
-    aspect-ratio: 1;
+    grid-column: 1 / 3;
     overflow: hidden;
     background-color: #f0f0f0;
-    margin-bottom: 1rem;
   }
   
   &__image {
@@ -91,25 +97,36 @@ const products = [
   }
   
   &__info {
+    grid-column: 1 / -1;
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: stretch;
+    border: 2px solid var(--color-sable);
+    
+  }
+
+  &__label-wrapper {
+    padding: 1rem;
+    display: flex;
     align-items: center;
+    flex-grow: 2;
+    font-size: var(--font-lg);
+    color: var(--color-marron);
+    font-weight: 300;
+    border-right: 2px solid var(--color-sable);
   }
   
-  &__label {
-    font-family: 'Regarn', sans-serif;
-    font-size: 0.9rem;
+  &__price-wrapper {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 130px;
+    font-size: var(--font-lg);
     color: var(--color-marron);
-    font-weight: 400;
-    margin: 0;
-  }
-  
-  &__price {
-    font-family: 'Regarn', sans-serif;
-    font-size: 0.9rem;
-    color: var(--color-marron);
-    font-weight: 400;
-    margin: 0;
+    font-weight: 300;
   }
   
   &__button {
