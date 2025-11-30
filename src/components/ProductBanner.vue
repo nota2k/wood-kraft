@@ -1,19 +1,3 @@
-<template>
-  <section class="product-banner">
-    <div class="product-banner__image-wrapper">
-      <img 
-        :src="bannerImage" 
-        :alt="title" 
-        class="product-banner__image"
-      />
-    </div>
-    <div class="product-banner__content">
-      <h1 class="product-banner__title">{{ title }}</h1>
-      <p v-if="subtitle" class="product-banner__subtitle">{{ subtitle }}</p>
-    </div>
-  </section>
-</template>
-
 <script setup>
 defineProps({
   title: {
@@ -30,6 +14,22 @@ defineProps({
   }
 })
 </script>
+
+<template>
+  <section class="product-banner">
+    <div class="product-banner__image-wrapper">
+      <img 
+        :src="bannerImage" 
+        :alt="title" 
+        class="product-banner__image"
+      />
+    </div>
+    <div class="product-banner__content">
+      <h1 class="product-banner__title">{{ title }}</h1>
+      <p v-if="subtitle" class="product-banner__subtitle">{{ subtitle }}</p>
+    </div>
+  </section>
+</template>
 
 <style scoped lang="scss">
 .product-banner {
@@ -93,4 +93,3 @@ defineProps({
   }
 }
 </style>
-

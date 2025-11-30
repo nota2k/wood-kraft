@@ -1,14 +1,27 @@
+<script setup>
+import { RouterLink } from 'vue-router'
+
+defineProps({
+  products: {
+    type: Array,
+    required: true,
+    default: () => []
+  }
+})
+</script>
+
 <template>
   <div class="product-listing">
     <div class="product-listing__container">
-        <div 
-          class="product-listing__item" 
-          v-for="(product, index) in products" 
-          :key="index"
+        <RouterLink 
+          v-for="product in products" 
+          :key="product.id"
+          :to="`/product/${product.id}`"
+          class="product-listing__item"
         >
           <div class="product-listing__image-wrapper">
             <img 
-              :src="product.image" 
+              :src="product.image || product.images[0]" 
               :alt="product.name" 
               class="product-listing__image"
             />
@@ -20,21 +33,11 @@
             <div class="product-listing__price-wrapper">
               <p class="product-listing__price">{{ product.price }} €</p>
             </div>
-        </div>
-      </div>
+          </div>
+        </RouterLink>
     </div>
   </div>
 </template>
-
-<script setup>
-defineProps({
-  products: {
-    type: Array,
-    required: true,
-    default: () => []
-  }
-})
-</script>
 
 <style scoped lang="scss">
 .product-listing {
@@ -61,9 +64,21 @@ defineProps({
   &__item {
     display: grid;
     grid-template-rows: auto 110px;
-    outline: 2px solid var(--color-marron);
+    outline: var(--border);
     background-color: var(--color-beige);
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform var(--transition), box-shadow var(--transition);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      
+      .product-listing__image-wrapper::after {
+        opacity: 1;
+      }
+    }
   }
   
   &__image-wrapper {
@@ -71,7 +86,7 @@ defineProps({
     aspect-ratio: 4/4;
     overflow: hidden;
     position: relative;
-    outline: 2px solid var(--color-marron);
+    outline: var(--border);
     background-color: #f0f0f0;
 
     &::after {
@@ -83,19 +98,12 @@ defineProps({
       height: 100%;
       opacity: 0;
       background-color: var(--color-marron);
-      transition: opacity 0.3s;
-      mix-blend-mode:color;
-    }
-
-    &:hover {
-      &::after {
-        cursor: pointer;
-        opacity: 1;
-      }
+      transition: opacity var(--transition);
+      mix-blend-mode: color;
+      pointer-events: none;
     }
   }
 
-  
   
   &__image {
     width: 100%;
@@ -107,7 +115,7 @@ defineProps({
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-    border-top: 2px solid var(--color-marron);
+    border-top: var(--border);
   }
   
   &__label-wrapper {
@@ -118,7 +126,7 @@ defineProps({
     font-size: var(--font-md);
     color: var(--color-marron);
     font-weight: 300;
-    border-right: 2px solid var(--color-marron);
+    border-right: var(--border);
   }
   
   &__label {
@@ -141,4 +149,3 @@ defineProps({
   }
 }
 </style>
-

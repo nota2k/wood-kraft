@@ -1,3 +1,12 @@
+<script setup>
+import HeroSection from '@/components/HeroSection.vue'
+import ImageGallery from '@/components/ImageGallery.vue'
+import WoodDesignSection from '@/components/WoodDesignSection.vue'
+import AboutUsSection from '@/components/AboutUsSection.vue'
+import OurProductsSection from '@/components/OurProductsSection.vue'
+import PhilosophySection from '@/components/PhilosophySection.vue'
+</script>
+
 <template>
   <main class="home">
     <HeroSection />
@@ -8,15 +17,6 @@
     <PhilosophySection />
   </main>
 </template>
-
-<script setup>
-import HeroSection from '@/components/HeroSection.vue'
-import ImageGallery from '@/components/ImageGallery.vue'
-import WoodDesignSection from '@/components/WoodDesignSection.vue'
-import AboutUsSection from '@/components/AboutUsSection.vue'
-import OurProductsSection from '@/components/OurProductsSection.vue'
-import PhilosophySection from '@/components/PhilosophySection.vue'
-</script>
 
 <style scoped lang="scss">
 .home {

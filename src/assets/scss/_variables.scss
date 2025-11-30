@@ -17,8 +17,8 @@
     /* Font size variables */
     --font-xs: clamp(0.75rem, 0.8vw, 0.875rem);        /* 12-14px - Très petit texte */
     --font-sm: clamp(1rem, 1.1vw, 1.2rem);             /* 14-16px - Petit texte */
-    --font-md: clamp(1.7rem, 1.8vw, 2rem);           /* 16-20px - Texte de base */
-    --font-lg: clamp(1.5rem, 2.5vw, 2rem);            /* 24-32px - Sous-titres */
+    --font-md: clamp(2rem, 2vw, 2.4rem);           /* 16-20px - Texte de base */
+    --font-lg: clamp(2rem, 4vw, 5rem);            /* 24-32px - Sous-titres */
     --font-xl: clamp(6.5rem, 5vw, 7rem);              /* 40-64px - Titres de section */
     --font-xxl: clamp(4rem, 10vw, 8rem);              /* 64-128px - Titres hero */
     --font-hero: clamp(6rem, 15vw, 12rem);           /* 96-192px - Très grands titres */
@@ -30,4 +30,16 @@
     --secondary-color:var(--color-beige);
 
     --max-width: 1200px;
+    
+    /* Common styles */
+    --border-width: 2px;
+    --border-color: var(--color-marron);
+    --border: var(--border-width) solid var(--border-color);
+    --border-radius: 30px;
+    
+    /* Image styles */
+    --image-cover: 100% 100% / cover;
+    
+    /* Transitions */
+    --transition: 0.3s;
 }

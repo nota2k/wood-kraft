@@ -1,3 +1,7 @@
+<script setup>
+// About us section component
+</script>
+
 <template>
   <section class="about-us">
       <div class="about-us__image-wrapper">
@@ -28,10 +32,6 @@
       </div>
   </section>
 </template>
-
-<script setup>
-// About us section component
-</script>
 
 <style scoped lang="scss">
 .about-us {
@@ -109,4 +109,3 @@
   }
 }
 </style>
-

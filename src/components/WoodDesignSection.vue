@@ -1,3 +1,7 @@
+<script setup>
+// Wood design section component
+</script>
+
 <template>
   <section class="wood-design">
       <div class="wood-design__image-wrapper">
@@ -17,10 +21,6 @@
       </div>
   </section>
 </template>
-
-<script setup>
-// Wood design section component
-</script>
 
 <style scoped lang="scss">
 .wood-design {
@@ -77,4 +77,3 @@
   }
 }
 </style>
-

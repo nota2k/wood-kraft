@@ -1,0 +1,230 @@
+[
+    {
+        "id": 1,
+        "name": "Tables hexagonales empilables",
+        "category": "tables",
+        "price": 350,
+        "description": "Une collection de tables hexagonales empilables, parfaites pour optimiser l'espace. Conçues en bois de chêne massif, ces tables allient esthétique moderne et fonctionnalité. Leur design épuré s'adapte à tous les intérieurs.",
+        "material": "Bois de chêne massif",
+        "dimensions": "50 x 50 x 45 cm",
+        "images": [
+            "home-ourproducts-01.png",
+            "home-ourproducts-02.png",
+            "home-ourproducts-03.png"
+        ],
+        "colorVariations": [
+            {
+                "name": "Chêne naturel",
+                "color": "#D4A574",
+                "available": true
+            },
+            {
+                "name": "Chêne teinté foncé",
+                "color": "#7A572F",
+                "available": true
+            },
+            {
+                "name": "Chêne clair",
+                "color": "#E8D5B7",
+                "available": true
+            }
+        ],
+        "isNew": true
+    },
+    {
+        "id": 2,
+        "name": "Table d'appoint design",
+        "category": "tables",
+        "price": 280,
+        "description": "Table d'appoint élégante au design minimaliste. Ses lignes fines et sa finition soignée en font une pièce de choix pour compléter votre espace de vie. Disponible en plusieurs teintes de bois.",
+        "material": "Bois de hêtre",
+        "dimensions": "40 x 40 x 55 cm",
+        "images": [
+            "home-ourproducts-02.png",
+            "home-ourproducts-01.png",
+            "home-ourproducts-04.png"
+        ],
+        "colorVariations": [
+            {
+                "name": "Hêtre naturel",
+                "color": "#D4B896",
+                "available": true
+            },
+            {
+                "name": "Hêtre cendré",
+                "color": "#B8A082",
+                "available": true
+            }
+        ],
+        "isNew": false
+    },
+    {
+        "id": 3,
+        "name": "Armoire à portes lattées",
+        "category": "storage",
+        "price": 1250,
+        "description": "Armoire spacieuse avec portes à lattes pour une ventilation optimale. Parfaite pour le rangement tout en gardant une esthétique moderne. Les portes coulissantes permettent un gain d'espace considérable.",
+        "material": "Bois de chêne massif",
+        "dimensions": "180 x 60 x 220 cm",
+        "images": [
+            "home-ourproducts-03.png",
+            "home-ourproducts-05.png",
+            "home-ourproducts-01.png",
+            "home-ourproducts-04.png"
+        ],
+        "colorVariations": [
+            {
+                "name": "Chêne naturel",
+                "color": "#D4A574",
+                "available": true
+            },
+            {
+                "name": "Chêne fumé",
+                "color": "#5C4033",
+                "available": true
+            }
+        ],
+        "isNew": false
+    },
+    {
+        "id": 4,
+        "name": "Étagère moderne",
+        "category": "shelves",
+        "price": 195,
+        "description": "Étagère murale épurée aux lignes contemporaines. Idéale pour mettre en valeur vos objets déco ou vos livres. Installation facile avec un design qui s'intègre harmonieusement dans votre intérieur.",
+        "material": "Bois de pin massif",
+        "dimensions": "120 x 25 x 180 cm",
+        "images": [
+            "home-ourproducts-04.png",
+            "home-ourproducts-02.png",
+            "home-ourproducts-05.png"
+        ],
+        "colorVariations": [
+            {
+                "name": "Pin naturel",
+                "color": "#E8D5B7",
+                "available": true
+            },
+            {
+                "name": "Pin huilé",
+                "color": "#C9B082",
+                "available": true
+            },
+            {
+                "name": "Pin blanchi",
+                "color": "#F5F4EC",
+                "available": true
+            }
+        ],
+        "isNew": true
+    },
+    {
+        "id": 5,
+        "name": "Meuble de rangement bas",
+        "category": "storage",
+        "price": 420,
+        "description": "Meuble de rangement bas aux formes organiques. Ses tiroirs coulissants offrent un espace de rangement pratique tandis que son design arrondi apporte douceur et élégance à votre espace.",
+        "material": "Bois de noyer",
+        "dimensions": "150 x 45 x 55 cm",
+        "images": [
+            "home-ourproducts-05.png",
+            "home-ourproducts-03.png",
+            "home-ourproducts-01.png"
+        ],
+        "colorVariations": [
+            {
+                "name": "Noyer naturel",
+                "color": "#6B4423",
+                "available": true
+            },
+            {
+                "name": "Noyer clair",
+                "color": "#8B6F47",
+                "available": true
+            }
+        ],
+        "isNew": false
+    },
+    {
+        "id": 6,
+        "name": "Table basse ronde",
+        "category": "tables",
+        "price": 320,
+        "description": "Table basse ronde en bois massif au design intemporel. Son plateau unique en une seule planche met en valeur les veines naturelles du bois. Parfaite pour créer une ambiance chaleureuse.",
+        "material": "Bois de chêne massif",
+        "dimensions": "80 x 80 x 42 cm",
+        "images": [
+            "home-ourproducts-01.png",
+            "home-ourproducts-02.png",
+            "home-ourproducts-04.png"
+        ],
+        "colorVariations": [
+            {
+                "name": "Chêne naturel",
+                "color": "#D4A574",
+                "available": true
+            },
+            {
+                "name": "Chêne cérusé",
+                "color": "#F5F4EC",
+                "available": true
+            }
+        ],
+        "isNew": false
+    },
+    {
+        "id": 7,
+        "name": "Chaise design",
+        "category": "chairs",
+        "price": 280,
+        "description": "Chaise au design épuré et confortable. Son assise en bois sculpté et son dossier arrondi offrent un excellent confort tout en conservant une esthétique moderne. Disponible avec ou sans accoudoirs.",
+        "material": "Bois de hêtre massif",
+        "dimensions": "45 x 50 x 85 cm",
+        "images": [
+            "home-ourproducts-02.png",
+            "home-ourproducts-03.png",
+            "home-ourproducts-05.png"
+        ],
+        "colorVariations": [
+            {
+                "name": "Hêtre naturel",
+                "color": "#D4B896",
+                "available": true
+            },
+            {
+                "name": "Hêtre teinté",
+                "color": "#A68B5B",
+                "available": true
+            }
+        ],
+        "isNew": true
+    },
+    {
+        "id": 8,
+        "name": "Bureau en bois massif",
+        "category": "tables",
+        "price": 650,
+        "description": "Bureau élégant en bois massif pour votre espace de travail. Son plateau spacieux et ses rangements intégrés vous offrent tout le confort nécessaire. Design sobre et fonctionnel.",
+        "material": "Bois de chêne massif",
+        "dimensions": "140 x 70 x 75 cm",
+        "images": [
+            "home-ourproducts-03.png",
+            "home-ourproducts-01.png",
+            "home-ourproducts-05.png",
+            "home-ourproducts-04.png"
+        ],
+        "colorVariations": [
+            {
+                "name": "Chêne naturel",
+                "color": "#D4A574",
+                "available": true
+            },
+            {
+                "name": "Chêne foncé",
+                "color": "#7A572F",
+                "available": true
+            }
+        ],
+        "isNew": false
+    }
+]

@@ -1,62 +1,33 @@
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useProductsStore } from '@/stores/products'
 import ProductBanner from '@/components/ProductBanner.vue'
 import ProductListing from '@/components/ProductListing.vue'
 import ProductFilters from '@/components/ProductFilters.vue'
 
 // Import des images
 import bannerImg from '@/assets/images/hero-banner.png'
-import productImage01 from '@/assets/images/home-ourproducts-01.png'
-import productImage02 from '@/assets/images/home-ourproducts-02.png'
-import productImage03 from '@/assets/images/home-ourproducts-03.png'
-import productImage04 from '@/assets/images/home-ourproducts-04.png'
-import productImage05 from '@/assets/images/home-ourproducts-05.png'
 
+const productsStore = useProductsStore()
 const bannerImage = ref(bannerImg)
 
-const products = ref([
-  {
-    name: 'Tables hexagonales',
-    image: productImage01,
-    price: '--'
+const filters = ref({
+  category: '',
+  priceRange: {
+    min: 0,
+    max: 5000
   },
-  {
-    name: 'Table d\'appoint',
-    image: productImage02,
-    price: '--'
-  },
-  {
-    name: 'Armoire',
-    image: productImage03,
-    price: '--'
-  },
-  {
-    name: 'Étagère moderne',
-    image: productImage04,
-    price: '--'
-  },
-  {
-    name: 'Meuble de rangement',
-    image: productImage05,
-    price: '--'
-  },
-  {
-    name: 'Table basse',
-    image: productImage01,
-    price: '--'
-  },
-  {
-    name: 'Chaise design',
-    image: productImage02,
-    price: '--'
-  },
-  {
-    name: 'Bureau en bois',
-    image: productImage03,
-    price: '--'
-  }
-])
+  newOnly: false
+})
+
+const filteredProducts = computed(() => {
+  return productsStore.filterProducts(filters.value)
+})
+
+const handleFilters = (newFilters) => {
+  filters.value = { ...newFilters }
+}
 </script>
 
 <template>
@@ -66,8 +37,8 @@ const products = ref([
       subtitle="Découvrez notre collection de meubles en bois"
       :banner-image="bannerImage"
     />
-    <ProductFilters />
-    <ProductListing :products="products" />
+    <ProductFilters @update-filters="handleFilters" />
+    <ProductListing :products="filteredProducts" />
   </main>
 </template>
 

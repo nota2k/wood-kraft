@@ -1,0 +1,161 @@
+# Vue.js Project Rules - Wood & Kraft
+
+## Architecture et Organisation des Composants
+
+### Structure des dossiers
+- **Par fonctionnalité** : Grouper les composants liés à une même fonctionnalité (ex: `components/products/`, `components/filters/`)
+- **Par page** : Créer un dossier pour les composants spécifiques à une page (ex: `components/home/`, `components/product/`)
+- **Partagés** : Les composants réutilisables dans plusieurs endroits restent dans `components/` directement
+
+### Découpage des composants
+- **Découper les gros templates** : Si un template dépasse ~100 lignes, le diviser en sous-composants
+- **Un composant = une responsabilité** : Chaque composant doit avoir une responsabilité claire et unique
+- **Privilégier la composition** : Utiliser des petits composants composables plutôt qu'un gros composant monolithique
+
+Exemple de structure :
+```
+components/
+  ├── products/
+  │   ├── ProductCard.vue
+  │   ├── ProductFilters.vue
+  │   └── ProductGallery.vue
+  ├── home/
+  │   ├── HeroSection.vue
+  │   └── ImageGallery.vue
+  └── shared/
+      ├── Header.vue
+      └── Button.vue
+```
+
+## Style SCSS - Simplicité et Réutilisation
+
+### Variables CSS
+- **Toujours utiliser les variables existantes** avant de créer de nouvelles propriétés
+- Utiliser `var(--padding-*)`, `var(--font-*)`, `var(--color-*)` depuis `_variables.scss`
+- Pour les bordures : utiliser `var(--border)` au lieu de répéter `2px solid var(--color-marron)`
+- Pour les transitions : utiliser `var(--transition)` au lieu de répéter `0.3s`
+
+### Éviter les répétitions
+- **Ne pas répéter les mêmes propriétés** : Si une propriété est utilisée 3+ fois, créer une variable CSS ou une classe utilitaire
+- **Réutiliser les styles existants** : Vérifier d'abord dans `_buttons.scss`, `_forms.scss`, `_typography.scss` avant de créer de nouveaux styles
+- **Préférer l'héritage** : Utiliser `@extend` avec parcimonie, préférer les variables CSS
+
+### Simplicité avant tout
+- **Éviter les surcouches** : Ne pas créer de mixins ou fonctions SCSS complexes si une simple variable CSS suffit
+- **Pas de nesting excessif** : Maximum 3 niveaux de nesting en SCSS
+- **Utiliser les sélecteurs CSS natifs** : Préférer `:hover`, `:focus` plutôt que des classes JavaScript
+
+### Bonnes pratiques SCSS
+```scss
+// ✅ BON : Utiliser les variables
+.element {
+  padding: var(--padding-sm);
+  color: var(--color-marron);
+  border: var(--border);
+  transition: opacity var(--transition);
+}
+
+// ❌ MAUVAIS : Répéter les valeurs
+.element {
+  padding: 1.5rem;
+  color: #7A572F;
+  border: 2px solid #7A572F;
+  transition: opacity 0.3s;
+}
+
+// ✅ BON : Utiliser les sélecteurs natifs
+.button {
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+// ❌ MAUVAIS : Surcouche inutile
+@mixin button-hover {
+  opacity: 0.9;
+}
+```
+
+## Composants Vue
+
+### Structure des composants
+- **ORDRE OBLIGATOIRE** : `<script setup>` → `<template>` → `<style scoped lang="scss">`
+- **Tous les composants doivent respecter cet ordre** : Script en premier, puis template, puis style
+- **Props typées** : Toujours typer les props avec `defineProps`
+- **Nommage** : Utiliser PascalCase pour les noms de composants et kebab-case pour les classes CSS
+
+### Template
+- **Limiter la complexité** : Si un template est trop complexe, créer des sous-composants
+- **Utiliser des classes BEM** : Structure `component__element--modifier`
+- **Éviter les styles inline** : Préférer les classes CSS aux styles inline
+
+### Script
+- **Composition API** : Toujours utiliser `<script setup>`
+- **Imports groupés** : Grouper les imports par type (Vue, composants, utils, assets)
+- **Réactivité** : Utiliser `ref()` pour les valeurs primitives, `reactive()` pour les objets complexes
+
+## Exemples
+
+### Composant simple et découpé
+```vue
+<script setup>
+import { ref } from 'vue'
+import ProductImage from './ProductImage.vue'
+import ProductInfo from './ProductInfo.vue'
+
+const selectedImage = ref(null)
+</script>
+
+<template>
+  <div class="product">
+    <ProductImage :image="selectedImage" />
+    <ProductInfo />
+  </div>
+</template>
+
+<style scoped lang="scss">
+.product {
+  padding: var(--padding-md);
+  background-color: var(--color-beige);
+}
+</style>
+```
+
+### Style simple et réutilisable
+```scss
+// ✅ BON : Simple et avec variables
+.card {
+  padding: var(--padding-sm);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  
+  &__title {
+    font-size: var(--font-lg);
+    color: var(--color-marron);
+  }
+}
+
+// ❌ MAUVAIS : Complexe et répétitif
+.card {
+  padding: 24px 32px;
+  border: 2px solid #7A572F;
+  border-radius: 30px;
+  
+  .card-title {
+    font-size: 1.5rem;
+    color: #7A572F;
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+}
+```
+
+## Règles de validation
+
+Avant de créer un nouveau composant ou style, vérifier :
+1. ✅ Existe-t-il déjà un composant similaire à réutiliser ?
+2. ✅ Les variables CSS existantes sont-elles utilisées ?
+3. ✅ Le composant peut-il être divisé en sous-composants plus petits ?
+4. ✅ Y a-t-il des répétitions CSS à éliminer ?
+5. ✅ Le style est-il le plus simple possible ?
+

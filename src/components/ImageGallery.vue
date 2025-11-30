@@ -1,3 +1,7 @@
+<script setup>
+// Image gallery component
+</script>
+
 <template>
   <section class="image-gallery">
       <div class="image-gallery__item">
@@ -9,10 +13,6 @@
       </div>
   </section>
 </template>
-
-<script setup>
-// Image gallery component
-</script>
 
 <style scoped lang="scss">
 .image-gallery {
