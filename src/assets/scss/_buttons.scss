@@ -6,6 +6,8 @@
 button{
     padding: var(--padding-xs) var(--padding-sm);
     background-color: var(--primary-color);
+    display: inline-flex;
+    justify-content: space-between;
     border: none;
     font-size: clamp(26px, 3vw, 28px);
     font-family: 'Regarn', sans-serif;

@@ -5,7 +5,7 @@ import productImage02 from '@/assets/images/home-ourproducts-02.png'
 import productImage03 from '@/assets/images/home-ourproducts-03.png'
 import productImage04 from '@/assets/images/home-ourproducts-04.png'
 import productImage05 from '@/assets/images/home-ourproducts-05.png'
-
+import { MoveRight } from 'lucide-vue-next'
 const products = [
   {
     name: 'Tables hexagonales',
@@ -63,7 +63,7 @@ const products = [
           </div>
         </div>
       </div>
-      <button class="our-products__button">More →</button>
+      <button class="our-products__button">More <span class="our-products__button-icon"><MoveRight/></span></button>
     </div>
   </section>
 </template>

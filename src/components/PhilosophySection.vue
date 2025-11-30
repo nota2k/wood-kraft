@@ -1,3 +1,7 @@
+<script setup>
+import { MoveRight } from 'lucide-vue-next'
+</script>
+
 <template>
   <section class="philosophy">
     <div class="philosophy__container">
@@ -18,14 +22,10 @@
           la qualité, la durabilité et l'authenticité.
         </p>
       </div>
-        <button class="philosophy__button-text">More →</button>
+        <button class="philosophy__button-text">More <span class="philosophy__button-icon"><MoveRight/></span></button>
     </div>
   </section>
 </template>
-
-<script setup>
-// Philosophy section component
-</script>
 
 <style scoped lang="scss">
 .philosophy {
