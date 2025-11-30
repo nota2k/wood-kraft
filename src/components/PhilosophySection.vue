@@ -33,11 +33,12 @@ import { MoveRight } from 'lucide-vue-next'
   background-color: var(--color-beige);
   
   &__container {
+    grid-column: 1 / -1;
     max-width: 1280px;
     margin: 0 auto;
     display: grid;
     position: relative;
-    grid-template-columns: minmax(250px, 400px) minmax(400px, 1fr);
+    grid-template-columns: subgrid;
     gap: 6rem;
     align-items: center;
     
@@ -48,8 +49,9 @@ import { MoveRight } from 'lucide-vue-next'
   }
   
   &__image-wrapper {
+    grid-column: 2 / span 2;
+    grid-row: 1 / span 2;
     position: relative;
-    max-width: 100%;
     height: 100%;
   }
   
@@ -76,7 +78,7 @@ import { MoveRight } from 'lucide-vue-next'
   
   &__content {
     align-self: flex-start;
-    max-width: 450px;
+    grid-column: 4 / span 3;
     margin-top: 8rem;
   }
   
@@ -89,8 +91,7 @@ import { MoveRight } from 'lucide-vue-next'
   }
 
   &__button {
-    max-width: var(--large-button);
-    margin: 0 auto;
+    grid-column: 4 / span 3;
     width: 100%;
   }
 }

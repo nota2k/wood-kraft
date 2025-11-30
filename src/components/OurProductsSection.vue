@@ -76,6 +76,8 @@ const products = [
   &__container {
     max-width: 1280px;
     margin: 0 auto;
+  grid-column: 1 / -1;
+
   }
   
   &__title {

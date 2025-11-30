@@ -1,6 +1,5 @@
 <template>
   <section class="about-us">
-    <div class="about-us__container">
       <div class="about-us__image-wrapper">
         <div class="about-us__image-wrapper-inner">
         <img 
@@ -27,7 +26,6 @@
         </p>
         <button class="about-us__button">More →</button>
       </div>
-    </div>
   </section>
 </template>
 
@@ -40,25 +38,10 @@
   padding: 6rem 2rem;
   background-color: var(--color-beige);
   
-  &__container {
-    max-width: 1280px;
-    margin: 0 auto;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
-    align-items: center;
-    
-    @media (max-width: 1024px) {
-      grid-template-columns: 1fr;
-      gap: 3rem;
-    }
-  }
-  
   &__image-wrapper {
+    grid-column: 1 / span 5;
     position: relative;
     align-self: flex-start;
-    width: 80%;
 
     img {
       width: 100%;
@@ -68,13 +51,13 @@
   }
   
   &__title-overlay {
-    right: 0;
     font-family: "Lovan", serif;
-    font-size: clamp(6rem, 12vw, 12rem);
+    font-size: clamp(8rem, 17vw, 17rem);
     color: var(--color-marron-light);
     z-index: 2;
     pointer-events: none;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
+    grid-column: 1 / span 2;
     white-space: nowrap;
     position: relative;
     font-weight: 400;
@@ -100,9 +83,11 @@
     }
   
   &__content {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    grid-column: 3 / span 4;
+    position: relative;
+    top: -8rem;
+    display: grid;
+    grid-template-columns: subgrid;
     gap: 2rem;
   }
   
@@ -111,14 +96,16 @@
     font-size: clamp(36px, 2vw, 28px);
     color: var(--color-vert-gris);
     font-weight: 200;
-    max-width: 520px;
-    margin-right: 130px;
+    margin-right: 180px;
     text-align: justify;
+    grid-column: 1 / span 4;
     line-height: 1.3;
   }
   
   &__button {
-    max-width: var(--medium-button);
+    grid-column: 1 / span 3;
+    grid-row: 3 / span 1;
+    align-self: flex-end;
   }
 }
 </style>
