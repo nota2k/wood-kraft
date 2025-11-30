@@ -1,0 +1,18 @@
+:root{
+    --small-button:150px;
+    --medium-button:200px;
+    --large-button:300px;
+    --primary-color:var(--color-vert);
+    --secondary-color:var(--color-beige);
+}
+
+
+button{
+    padding: var(--padding-xs) var(--padding-sm);
+    background-color: var(--primary-color);
+    border: none;
+    font-size: clamp(26px, 3vw, 28px);
+    font-family: 'Regarn', sans-serif;
+    font-weight: 200;
+    color: var(--color-dark);
+}

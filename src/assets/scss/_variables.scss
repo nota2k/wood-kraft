@@ -3,4 +3,12 @@
     --color-marron: #7A572F;
     --color-sable: #E2DFC7;
     --color-vert-gris:#7DA08B;
+    --color-vert: #AED3AA;
+    --color-dark: #3C3A1F;
+    
+    /* Padding variables */
+    --padding-xs: clamp(0.75rem, 1vw, 1rem);      /* 12-16px - Petit espacement */
+    --padding-sm: clamp(1.5rem, 2vw, 2rem);      /* 24-32px - Espacement moyen */
+    --padding-md: clamp(3rem, 4vw, 4rem);       /* 48-64px - Grand espacement */
+    --padding-lg: clamp(4.5rem, 6vw, 6rem);      /* 72-96px - Très grand espacement */
 }
