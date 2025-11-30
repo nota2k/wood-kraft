@@ -1,7 +1,7 @@
 :root { 
     --color-beige: #F5F4EC;
     --color-marron: #7A572F;
-    --color-marron-light: #AFA865;
+    --color-marron-light: #CCBB9F;
     --color-sable: #E2DFC7;
     --color-vert-gris:#7DA08B;
     --color-vert: #AED3AA;
@@ -16,7 +16,7 @@
     /* Font size variables */
     --font-xs: clamp(0.75rem, 0.8vw, 0.875rem);        /* 12-14px - Très petit texte */
     --font-sm: clamp(0.875rem, 1vw, 1rem);             /* 14-16px - Petit texte */
-    --font-md: clamp(1rem, 1.2vw, 1.25rem);           /* 16-20px - Texte de base */
+    --font-md: clamp(1.7rem, 1.8vw, 2rem);           /* 16-20px - Texte de base */
     --font-lg: clamp(1.5rem, 2.5vw, 2rem);            /* 24-32px - Sous-titres */
     --font-xl: clamp(6.5rem, 5vw, 7rem);              /* 40-64px - Titres de section */
     --font-xxl: clamp(4rem, 10vw, 8rem);              /* 64-128px - Titres hero */

@@ -1,9 +1,5 @@
 :root{
-    --small-button:150px;
-    --medium-button:200px;
-    --large-button:300px;
-    --primary-color:var(--color-vert);
-    --secondary-color:var(--color-beige);
+
 }
 
 
@@ -15,4 +11,5 @@ button{
     font-family: 'Regarn', sans-serif;
     font-weight: 200;
     color: var(--color-dark);
+    text-align: left;
 }

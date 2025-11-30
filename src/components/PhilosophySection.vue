@@ -1,8 +1,9 @@
 <template>
   <section class="philosophy">
     <div class="philosophy__container">
+      <h2 class="philosophy__title-overlay">PHILOSOPHY</h2>
       <div class="philosophy__image-wrapper">
-        <h2 class="philosophy__title-overlay">PHILOSOPHY</h2>
+        
         <img 
           src="@/assets/images/home-philosophy.png" 
           alt="Philosophy" 
@@ -17,6 +18,7 @@
           la qualité, la durabilité et l'authenticité.
         </p>
       </div>
+        <button class="philosophy__button-text">More →</button>
     </div>
   </section>
 </template>
@@ -34,8 +36,9 @@
     max-width: 1280px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    position: relative;
+    grid-template-columns: minmax(250px, 400px) minmax(400px, 1fr);
+    gap: 6rem;
     align-items: center;
     
     @media (max-width: 1024px) {
@@ -46,22 +49,21 @@
   
   &__image-wrapper {
     position: relative;
-    aspect-ratio: 4/5;
-    overflow: hidden;
+    max-width: 100%;
+    height: 100%;
   }
   
   &__title-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: 'Lovan', serif;
-    font-size: clamp(4rem, 8vw, 7rem);
-    color: var(--color-marron);
-    opacity: 0.3;
-    z-index: 2;
-    pointer-events: none;
-    white-space: nowrap;
+    top: -80px;
+    left: 0;
+    font-family: 'Rokurou', serif;
+    font-size: clamp(12rem, 12vw, 13rem);
+    color: var(--color-marron-light);
+    font-weight: 300;
+    text-align: right;
+    right: 0;
+    width: 100%;
   }
   
   &__image {
@@ -73,17 +75,23 @@
   }
   
   &__content {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    align-self: flex-start;
+    max-width: 450px;
+    margin-top: 8rem;
   }
   
   &__text {
     font-family: 'Regarn', sans-serif;
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
-    color: var(--color-marron);
+    font-size: var(--font-md);
+    color: var(--color-marron-light);
     font-weight: 300;
     line-height: 1.6;
+  }
+
+  &__button {
+    max-width: var(--large-button);
+    margin: 0 auto;
+    width: 100%;
   }
 }
 </style>
