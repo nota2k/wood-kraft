@@ -1,6 +1,5 @@
 <template>
   <section class="wood-design">
-    <div class="wood-design__container">
       <div class="wood-design__image-wrapper">
         <img 
           src="@/assets/images/home-canard.png" 
@@ -16,7 +15,6 @@
           formes organiques et les lignes pures, pour des meubles qui s'intègrent harmonieusement dans votre espace.
         </p>
       </div>
-    </div>
   </section>
 </template>
 
@@ -29,25 +27,12 @@
   padding: 6rem 2rem;
   background-color: var(--color-beige);
   
-  &__container {
-    max-width: 1280px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 400px 1fr;
-    gap: 4rem;
-    align-items: center;
-    
-    @media (max-width: 1024px) {
-      grid-template-columns: 1fr;
-      gap: 3rem;
-    }
-  }
-  
   &__image-wrapper {
+    position: relative;
     width: 100%;
-    max-width: 400px;
+    right: -6rem;
+    grid-column: 1 / span 3;
     aspect-ratio: 2/3;
-    overflow: hidden;
     background-color: var(--color-vert-gris);
     
     @media (max-width: 1024px) {
@@ -64,8 +49,10 @@
   
   &__content {
     display: flex;
+    position: relative;
+    top: 12rem;
+    grid-column: 4 / span 3;
     flex-direction: column;
-    max-width: 600px;
     background-color: var(--color-sable);
     gap: 2rem;
     padding: 3rem;

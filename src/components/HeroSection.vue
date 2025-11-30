@@ -42,18 +42,19 @@
 .hero {
   position: relative;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
   margin-top: 80px;
   
   &__image-wrapper {
     width: 100%;
     position: relative;
     top: 6vh;
-    max-width: 400px;
     height: 700px;
     left: 0;
+    grid-column: 2 / span 3;
+
   }
   
   &__image {

@@ -1,5 +1,8 @@
 section{
     margin: 20vh auto;
     max-width: var(--max-width);
+    display: grid;
+    grid-template-columns: repeat(6, minmax(100px, 1fr));
+    gap: 2rem;
     width: 100%;
 }
