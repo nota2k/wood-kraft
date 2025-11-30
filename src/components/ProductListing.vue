@@ -64,18 +64,38 @@ defineProps({
     outline: 2px solid var(--color-marron);
     background-color: var(--color-beige);
     transition: transform 0.3s, box-shadow 0.3s;
-    
-    &:hover {
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    }
   }
   
   &__image-wrapper {
     width: 100%;
     aspect-ratio: 4/4;
     overflow: hidden;
+    position: relative;
+    outline: 2px solid var(--color-marron);
     background-color: #f0f0f0;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      background-color: var(--color-marron);
+      transition: opacity 0.3s;
+      mix-blend-mode:color;
+    }
+
+    &:hover {
+      &::after {
+        cursor: pointer;
+        opacity: 1;
+      }
+    }
   }
+
+  
   
   &__image {
     width: 100%;

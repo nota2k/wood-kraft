@@ -67,3 +67,13 @@
     font-weight: 500;
     font-style: normal;
 }
+
+body{
+    font-family: 'Regarn', sans-serif;
+    font-size:16px;
+}
+
+p, span, li, a, button, input, textarea, select, option, label, h1, h2, h3, h4, h5, h6{
+    font-size:var(--font-sm);
+    line-height: 1.1;
+}
