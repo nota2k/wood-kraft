@@ -1,9 +1,15 @@
+<script setup>
+// Header component
+</script>
+
 <template>
   <header class="header">
     <div class="header__container">
-      <div class="header__logo">
-        <img src="@/assets/images/logo.svg" alt="WOOD & KRAFT" class="header__logo-img" />
-      </div>
+      <router-link to="/">
+        <div class="header__logo">
+          <img src="@/assets/images/logo.svg" alt="WOOD & KRAFT" class="header__logo-img" />
+        </div>
+      </router-link>
       
       <button class="header__menu-toggle" aria-label="Menu">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -20,10 +26,6 @@
     </div>
   </header>
 </template>
-
-<script setup>
-// Header component
-</script>
 
 <style scoped lang="scss">
 .header {

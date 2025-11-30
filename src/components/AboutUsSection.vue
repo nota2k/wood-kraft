@@ -2,7 +2,6 @@
   <section class="about-us">
     <div class="about-us__container">
       <div class="about-us__image-wrapper">
-        <h2 class="about-us__title-overlay">ABOUT US</h2>
         <div class="about-us__image-wrapper-inner">
         <img 
           src="@/assets/images/home-aboutus.png" 
@@ -19,6 +18,8 @@
         />
       </div>
       <div class="about-us__content">
+        <h2 class="about-us__title-overlay">ABOUT US</h2>
+
         <p class="about-us__text">
           Derrière chaque création se cache un ébéniste passionné, amoureux du travail manuel et du détail. 
           Nous concevons et fabriquons des meubles sur mesure, en collaboration étroite avec nos clients. 
@@ -42,6 +43,7 @@
   &__container {
     max-width: 1280px;
     margin: 0 auto;
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 4rem;
@@ -55,23 +57,27 @@
   
   &__image-wrapper {
     position: relative;
-    width: 100%;
-    max-width: 800px;
-    aspect-ratio: 4/2;
-    overflow: hidden;
+    align-self: flex-start;
+    width: 80%;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
   
   &__title-overlay {
-    position: absolute;
-    top: 20%;
     right: 0;
-    transform: translate(-50%, -50%);
-    font-family: 'Lovan', serif;
+    font-family: "Lovan", serif;
     font-size: clamp(6rem, 12vw, 12rem);
-    color: var(--color-sable);
+    color: var(--color-marron-light);
     z-index: 2;
     pointer-events: none;
+    margin-bottom: 4rem;
     white-space: nowrap;
+    position: relative;
+    font-weight: 400;
 
     &__image-wrapper-inner {
       position: absolute;
@@ -86,15 +92,17 @@
   &__second-image {
       position: absolute;
       width: 100%;
-      max-width: 400px;
+      max-width: 330px;
       right: 8%;
-      height: 100%;
+      height: 70%;
+      bottom: 0;
       object-fit: cover;
     }
   
   &__content {
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     gap: 2rem;
   }
   
@@ -102,10 +110,11 @@
     font-family: 'Regarn', sans-serif;
     font-size: clamp(36px, 2vw, 28px);
     color: var(--color-vert-gris);
-    font-weight: 100;
-    max-width: 620px;
+    font-weight: 200;
+    max-width: 520px;
+    margin-right: 130px;
     text-align: justify;
-    line-height: 1.2;
+    line-height: 1.3;
   }
   
   &__button {
