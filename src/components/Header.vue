@@ -19,6 +19,7 @@
       
       <nav class="header__nav">
         <a href="#" class="header__nav-link">Homepage</a>
+        <router-link to="/products" class="header__nav-link">Products</router-link>
         <a href="#" class="header__nav-link">Products</a>
         <a href="#" class="header__nav-link">About</a>
         <a href="#" class="header__nav-link">Contact</a>
