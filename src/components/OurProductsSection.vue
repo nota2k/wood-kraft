@@ -1,3 +1,45 @@
+<script setup>
+// Import des images depuis assets/images
+import productImage01 from '@/assets/images/home-ourproducts-01.png'
+import productImage02 from '@/assets/images/home-ourproducts-02.png'
+import productImage03 from '@/assets/images/home-ourproducts-03.png'
+import productImage04 from '@/assets/images/home-ourproducts-04.png'
+import productImage05 from '@/assets/images/home-ourproducts-05.png'
+
+const products = [
+  {
+    name: 'Tables hexagonales',
+    image: productImage01,
+    price: '--'
+  },
+  {
+    name: 'Table d\'appoint',
+    image: productImage02,
+    price: '--'
+  },
+  {
+    name: 'Armoire',
+    image: productImage03,
+    price: '--'
+  },
+  {
+    name: 'Étagère',
+    image: productImage05,
+    price: '--'
+  },
+  {
+    name: 'Étagère',
+    image: productImage04,
+    price: '--'
+  },
+  {
+    name: 'Étagère',
+    image: productImage04,
+    price: '--'
+  }
+]
+</script>
+
 <template>
   <section class="our-products">
     <div class="our-products__container">
@@ -26,31 +68,6 @@
   </section>
 </template>
 
-<script setup>
-const products = [
-  {
-    name: 'Tables hexagonales',
-    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=600&fit=crop',
-    price: '--'
-  },
-  {
-    name: 'Table d\'appoint',
-    image: 'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=600&h=600&fit=crop',
-    price: '--'
-  },
-  {
-    name: 'Armoire',
-    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=600&fit=crop',
-    price: '--'
-  },
-  {
-    name: 'Étagère',
-    image: 'https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=600&h=600&fit=crop',
-    price: '--'
-  }
-]
-</script>
-
 <style scoped lang="scss">
 .our-products {
   padding: 6rem 2rem;
@@ -72,16 +89,21 @@ const products = [
   
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
     grid-template-rows: repeat(3, minmax(450px, 1fr));
     margin-bottom: 3rem;
   }
   
   &__item {
     display: grid;
-    grid-template-rows: auto 70px;
+    grid-template-rows: auto 110px;
     grid-template-columns: 2fr 1fr;
     flex-direction: column;
+
+    &:nth-child(4) {
+      grid-column: 2 / span 2;
+      grid-row: 2 / span 2;
+    }
   }
   
   &__image-wrapper {
@@ -108,7 +130,7 @@ const products = [
   }
 
   &__label-wrapper {
-    padding: 1rem;
+    padding: 1rem 2rem;
     display: flex;
     align-items: center;
     flex-grow: 2;
@@ -119,7 +141,8 @@ const products = [
   }
   
   &__price-wrapper {
-    padding: 1rem;
+    padding: 1rem 2rem;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,22 +153,11 @@ const products = [
   }
   
   &__button {
-    font-family: 'Regarn', sans-serif;
-    font-size: 1rem;
-    color: white;
-    background-color: var(--color-vert-gris);
-    border: none;
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    cursor: pointer;
-    display: block;
+
+    max-width: var(--large-button);
     margin: 0 auto;
-    transition: opacity 0.3s;
-    font-weight: 400;
-    
-    &:hover {
-      opacity: 0.9;
-    }
+    text-align: left;
+    width: 100%;
   }
 }
 </style>

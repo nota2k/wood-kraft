@@ -20,4 +20,10 @@
     --font-xl: clamp(6.5rem, 5vw, 7rem);              /* 40-64px - Titres de section */
     --font-xxl: clamp(4rem, 10vw, 8rem);              /* 64-128px - Titres hero */
     --font-hero: clamp(6rem, 15vw, 12rem);           /* 96-192px - Très grands titres */
+
+    --small-button:150px;
+    --medium-button:200px;
+    --large-button:300px;
+    --primary-color:var(--color-vert);
+    --secondary-color:var(--color-beige);
 }
