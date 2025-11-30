@@ -38,7 +38,7 @@ defineProps({
 
 <style scoped lang="scss">
 .product-listing {
-  padding: var(--padding-sm) var(--padding-xs);
+  padding: var(--padding-xs) var(--padding-xs);
   background-color: var(--color-beige);
   display: grid;
   max-width: 100%;

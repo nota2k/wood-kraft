@@ -34,11 +34,13 @@ defineProps({
 <style scoped lang="scss">
 .product-banner {
   position: relative;
-  min-height: 60vh;
+  min-height: 100vh;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 80px;
+  max-width: 100%;
+  margin-bottom: var(--padding-xs);
   background-color: var(--color-beige);
   
   &__image-wrapper {
@@ -75,11 +77,11 @@ defineProps({
   }
   
   &__title {
-    font-family: 'Lovan', serif;
-    font-size: var(--font-xxl);
-    color: var(--color-beige);
+    font-family: 'Rokurou', serif;
+    font-weight: 300;
+    font-size: var(--font-hero);
+    color: var(--color-marron-dark);
     margin: 0;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
   }
   
   &__subtitle {
@@ -88,7 +90,6 @@ defineProps({
     color: var(--color-beige);
     margin-top: var(--padding-xs);
     font-weight: 300;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
   }
 }
 </style>

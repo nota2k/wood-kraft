@@ -1,18 +1,9 @@
-<template>
-  <main class="products-view">
-    <ProductBanner 
-      title="OUR PRODUCTS"
-      subtitle="Découvrez notre collection de meubles en bois"
-      :banner-image="bannerImage"
-    />
-    <ProductListing :products="products" />
-  </main>
-</template>
 
 <script setup>
 import { ref } from 'vue'
 import ProductBanner from '@/components/ProductBanner.vue'
 import ProductListing from '@/components/ProductListing.vue'
+import ProductFilters from '@/components/ProductFilters.vue'
 
 // Import des images
 import bannerImg from '@/assets/images/hero-banner.png'
@@ -67,6 +58,19 @@ const products = ref([
   }
 ])
 </script>
+
+<template>
+  <main class="products-view">
+    <ProductBanner 
+      title="OUR PRODUCTS"
+      subtitle="Découvrez notre collection de meubles en bois"
+      :banner-image="bannerImage"
+    />
+    <ProductFilters />
+    <ProductListing :products="products" />
+  </main>
+</template>
+
 
 <style scoped lang="scss">
 .products-view {
