@@ -7,7 +7,6 @@ const route = useRoute()
 const router = useRouter()
 const productsStore = useProductsStore()
 
-const selectedImage = ref(null)
 const selectedColor = ref(null)
 
 const product = computed(() => {
@@ -22,9 +21,6 @@ onMounted(() => {
     return
   }
   
-  if (product.value.images.length > 0) {
-    selectedImage.value = product.value.images[0]
-  }
   if (product.value.colorVariations && product.value.colorVariations.length > 0) {
     selectedColor.value = product.value.colorVariations[0]
   }
@@ -51,18 +47,12 @@ const getCategoryLabel = (category) => {
     <div class="product-view__container">
       <!-- Images produit -->
       <div class="product-view__gallery" v-if="product">
-        <div class="product-view__main-image">
-          <img :src="selectedImage || product.images[0]" :alt="product.name" />
-        </div>
-        <div class="product-view__thumbnails" v-if="product.images.length > 1">
-          <button
-            v-for="(image, index) in product.images"
-            :key="index"
-            @click="selectedImage = image"
-            :class="['product-view__thumbnail', { 'product-view__thumbnail--active': selectedImage === image || (!selectedImage && index === 0) }]"
-          >
-            <img :src="image" :alt="`${product.name} - vue ${index + 1}`" />
-          </button>
+        <div 
+          v-for="(image, index) in product.images" 
+          :key="index"
+          class="product-view__image-item"
+        >
+          <img :src="image" :alt="`${product.name} - vue ${index + 1}`" />
         </div>
       </div>
 
@@ -118,16 +108,17 @@ const getCategoryLabel = (category) => {
 
 <style scoped lang="scss">
 .product-view {
-  padding: 120px var(--padding-sm);
+  padding: 120px 0;
   background-color: var(--color-beige);
   min-height: calc(100vh - 80px);
   
   &__container {
-    max-width: var(--max-width);
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--padding-md);
+    position: relative;
     
     @media (max-width: 1024px) {
       grid-template-columns: 1fr;
@@ -137,10 +128,9 @@ const getCategoryLabel = (category) => {
   &__gallery {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-xs);
   }
   
-  &__main-image {
+  &__image-item {
     width: 100%;
     aspect-ratio: 1;
     overflow: hidden;
@@ -154,44 +144,15 @@ const getCategoryLabel = (category) => {
     }
   }
   
-  &__thumbnails {
-    display: flex;
-    gap: var(--padding-xs);
-    overflow-x: auto;
-  }
-  
-  &__thumbnail {
-    flex-shrink: 0;
-    width: 100px;
-    height: 100px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    outline: var(--border);
-    cursor: pointer;
-    overflow: hidden;
-    transition: opacity var(--transition);
-    
-    &--active {
-      outline-width: calc(var(--border-width) * 2);
-      outline-color: var(--color-vert-gris);
-    }
-    
-    &:hover {
-      opacity: 0.8;
-    }
-    
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-  
   &__info {
     display: flex;
+    padding: var(--padding-xs); 
     flex-direction: column;
+    position: sticky;
+    top: 90px;
+    align-self: flex-start;
     gap: var(--padding-xs);
+    height: fit-content;
   }
   
   &__title {
@@ -215,7 +176,7 @@ const getCategoryLabel = (category) => {
   }
   
   &__description {
-    padding: var(--padding-sm) 0;
+    padding: var(--padding-xs) 0;
     
     p {
       font-size: clamp(1.2rem, 1.8vw, 1.4rem);
@@ -234,6 +195,7 @@ const getCategoryLabel = (category) => {
     outline: var(--border);
     border-radius: calc(var(--border-radius) / 2);
     padding: var(--padding-sm);
+    margin-bottom: var(--padding-sm);
   }
   
   &__detail-item {
@@ -263,6 +225,7 @@ const getCategoryLabel = (category) => {
     display: flex;
     gap: var(--padding-xs);
     flex-wrap: wrap;
+    
   }
   
   &__button {
