@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
+import ProductSuggestions from '@/components/ProductSuggestions.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -103,6 +104,14 @@ const getCategoryLabel = (category) => {
         </div>
       </div>
     </div>
+    
+    <!-- Produits suggérés -->
+    <ProductSuggestions 
+      v-if="product"
+      :current-product-id="product.id"
+      :category="product.category"
+      :limit="4"
+    />
   </main>
 </template>
 
