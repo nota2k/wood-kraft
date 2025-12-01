@@ -93,6 +93,10 @@ defineProps({
       mix-blend-mode: color;
       pointer-events: none;
     }
+
+    &:hover::after {
+      opacity: 1;
+    }
   }
 
   
