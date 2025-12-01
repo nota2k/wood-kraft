@@ -2,12 +2,14 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
+import { useCartStore } from '@/stores/cart'
 import ProductSuggestions from '@/components/ProductSuggestions.vue'
 import Breadcrumb from '@/components/Breadcrumb.vue'
 
 const route = useRoute()
 const router = useRouter()
 const productsStore = useProductsStore()
+const cartStore = useCartStore()
 
 const selectedColor = ref(null)
 
@@ -51,6 +53,12 @@ const breadcrumbItems = computed(() => {
     { label: product.value.name }
   ]
 })
+
+const handleAddToCart = () => {
+  if (!product.value) return
+  
+  cartStore.addItem(product.value.id, selectedColor.value, 1)
+}
 </script>
 
 <template>
@@ -110,7 +118,7 @@ const breadcrumbItems = computed(() => {
         </div>
 
         <div class="product-view__actions">
-          <button class="product-view__button">Ajouter au panier</button>
+          <button class="product-view__button" @click="handleAddToCart">Ajouter au panier</button>
           <button class="product-view__button product-view__button--secondary">Contacter</button>
         </div>
       </div>

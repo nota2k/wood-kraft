@@ -70,15 +70,6 @@ defineProps({
     text-decoration: none;
     color: inherit;
     cursor: pointer;
-    
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-      
-      .product-listing__image-wrapper::after {
-        opacity: 1;
-      }
-    }
   }
   
   &__image-wrapper {

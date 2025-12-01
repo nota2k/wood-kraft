@@ -1,9 +1,56 @@
 <script setup>
-// Header component
+import { ref, onMounted, onUnmounted } from 'vue'
+import MiniCart from './MiniCart.vue'
+import CartModal from './CartModal.vue'
+
+defineOptions({
+    name: 'SiteHeader'
+})
+
+const isVisible = ref(true)
+const isCartOpen = ref(false)
+let lastScrollY = 0
+
+const handleScroll = () => {
+    const currentScrollY = window.scrollY
+
+    // Si on est tout en haut, toujours afficher le header
+    if (currentScrollY < 10) {
+        isVisible.value = true
+        lastScrollY = currentScrollY
+        return
+    }
+
+    // Si on scroll vers le bas, cacher le header
+    if (currentScrollY > lastScrollY) {
+        isVisible.value = false
+    } else {
+        // Si on scroll vers le haut, afficher le header
+        isVisible.value = true
+    }
+
+    lastScrollY = currentScrollY
+}
+
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
+})
+
+const handleCartClick = () => {
+    isCartOpen.value = true
+}
+
+const handleCartClose = () => {
+    isCartOpen.value = false
+}
 </script>
 
 <template>
-  <header class="header">
+  <header class="header" :class="{ 'header--hidden': !isVisible }">
     <div class="header__container">
       <router-link to="/">
         <div class="header__logo">
@@ -23,7 +70,10 @@
         <a href="#" class="header__nav-link">About</a>
         <a href="#" class="header__nav-link">Contact</a>
       </nav>
+      
+      <MiniCart @click="handleCartClick" />
     </div>
+    <CartModal :is-open="isCartOpen" @close="handleCartClose" />
   </header>
 </template>
 
@@ -36,9 +86,15 @@
   z-index: 1000;
   background-color: var(--color-beige);
   padding: 1.5rem 2rem;
+  transform: translateY(0);
+  transition: transform var(--transition);
+  box-shadow: 0 2px 4px rgba(104, 76, 36, 0.4);
+
+  &--hidden {
+    transform: translateY(-100%);
+  }
   
   &__container {
-    max-width: 1280px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;

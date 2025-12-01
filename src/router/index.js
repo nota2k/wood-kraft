@@ -27,7 +27,20 @@ const router = createRouter({
       name: 'product',
       component: () => import('../views/ProductView.vue'),
     },
+    {
+      path: '/cart',
+      name: 'cart',
+      component: () => import('../views/CartView.vue'),
+    },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    // Si on a une position sauvegardée (retour arrière), l'utiliser
+    if (savedPosition) {
+      return savedPosition
+    }
+    // Sinon, toujours aller en haut de la page instantanément
+    return { top: 0 }
+  },
 })
 
 export default router
