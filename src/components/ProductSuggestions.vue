@@ -1,11 +1,11 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
 import Swiper from 'swiper'
 import { Navigation } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import { useProductsStore } from '@/stores/products'
+import CardProduct from './CardProduct.vue'
 
 const props = defineProps({
     currentProductId: {
@@ -89,22 +89,7 @@ onMounted(() => {
                         :key="product.id"
                         class="swiper-slide"
                     >
-                        <RouterLink 
-                            :to="`/product/${product.id}`"
-                            class="product-suggestions__item"
-                        >
-                            <div class="product-suggestions__image-wrapper">
-                                <img 
-                                    :src="product.image || product.images[0]" 
-                                    :alt="product.name"
-                                    class="product-suggestions__image" 
-                                />
-                            </div>
-                            <div class="product-suggestions__info">
-                                <p class="product-suggestions__name">{{ product.name }}</p>
-                                <p class="product-suggestions__price">{{ product.price }} €</p>
-                            </div>
-                        </RouterLink>
+                        <CardProduct :product="product" />
                     </div>
                 </div>
             </div>
@@ -181,75 +166,9 @@ onMounted(() => {
         right: -60px;
     }
 
-    &__item {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        outline: var(--border);
-        background-color: var(--color-beige);
-        text-decoration: none;
-        color: inherit;
-        cursor: pointer;
-    }
-    
     :deep(.swiper-slide) {
         width: auto;
         height: auto;
-    }
-
-    &__image-wrapper {
-        width: 100%;
-        aspect-ratio: 1;
-        overflow: hidden;
-        position: relative;
-        outline: var(--border);
-        background-color: #f0f0f0;
-
-        &::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            background-color: var(--color-marron);
-            transition: opacity var(--transition);
-            mix-blend-mode: color;
-            pointer-events: none;
-        }
-    }
-
-    &__item:hover &__image-wrapper::after {
-        opacity: 1;
-    }
-
-    &__image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    &__info {
-        padding: var(--padding-xs) var(--padding-sm);
-        display: flex;
-        flex-direction: column;
-        gap: var(--padding-xs);
-        border-top: var(--border);
-    }
-
-    &__name {
-        font-size: var(--font-md);
-        color: var(--color-marron);
-        font-weight: 300;
-        margin: 0;
-    }
-
-    &__price {
-        font-size: var(--font-sm);
-        color: var(--color-marron);
-        font-weight: 500;
-        margin: 0;
     }
 }
 </style>
