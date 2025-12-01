@@ -47,6 +47,7 @@ const handleFilters = (newFilters) => {
 .products-view {
   background-color: var(--color-beige);
   min-height: 100vh;
+  max-width: 100%;
 }
 </style>
 

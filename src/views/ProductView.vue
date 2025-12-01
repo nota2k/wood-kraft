@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
 import ProductSuggestions from '@/components/ProductSuggestions.vue'
+import Breadcrumb from '@/components/Breadcrumb.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -41,10 +42,20 @@ const getCategoryLabel = (category) => {
   }
   return labels[category] || category
 }
+
+const breadcrumbItems = computed(() => {
+  if (!product.value) return []
+  
+  return [
+    { label: 'Produits', to: '/products' },
+    { label: product.value.name }
+  ]
+})
 </script>
 
 <template>
   <main class="product-view">
+    <Breadcrumb :items="breadcrumbItems" />
     <div class="product-view__container">
       <!-- Images produit -->
       <div class="product-view__gallery" v-if="product">
@@ -117,9 +128,10 @@ const getCategoryLabel = (category) => {
 
 <style scoped lang="scss">
 .product-view {
-  padding: 120px 0;
+  padding: 30px 0;
   background-color: var(--color-beige);
   min-height: calc(100vh - 80px);
+  max-width: 100%;
   
   &__container {
     max-width: 100%;

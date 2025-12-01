@@ -116,7 +116,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .product-suggestions {
-    padding: var(--padding-lg) var(--padding-sm);
+    padding: var(--padding-xs) var(--padding-sm);
     background-color: var(--color-beige);
     border-top: var(--border);
     max-width: 100%;
@@ -132,7 +132,7 @@ onMounted(() => {
 
     &__container {
         max-width: var(--max-width);
-        margin: 0 auto;
+        margin: 2rem auto 0 auto;
         position: relative;
     }
 
@@ -149,7 +149,7 @@ onMounted(() => {
         height: 48px;
         border-radius: 50%;
         border: var(--border);
-        background-color: var(--color-beige);
+        // background-color: var(--color-beige);
         color: var(--color-marron);
         cursor: pointer;
         z-index: 10;
