@@ -26,30 +26,52 @@ const productsStore = useProductsStore()
 const sliderRef = ref(null)
 
 const suggestedProducts = computed(() => {
-    let products = []
+    let categoryProducts = []
+    let otherProducts = []
 
     if (props.category) {
-        products = productsStore.getProductsByCategory(props.category)
+        // Produits de la même catégorie
+        categoryProducts = productsStore.getProductsByCategory(props.category)
+            .filter(product => product.id !== props.currentProductId)
+        
+        // Si on n'a pas assez de produits dans la catégorie, compléter avec d'autres produits
+        if (categoryProducts.length < props.limit) {
+            otherProducts = productsStore.getAllProducts
+                .filter(product => 
+                    product.id !== props.currentProductId && 
+                    product.category !== props.category
+                )
+                .slice(0, props.limit - categoryProducts.length)
+        }
     } else {
-        products = productsStore.getAllProducts
+        // Pas de catégorie spécifiée, prendre tous les produits
+        categoryProducts = productsStore.getAllProducts
+            .filter(product => product.id !== props.currentProductId)
     }
 
-    // Limiter à 6 produits maximum
-    return products
-        .filter(product => product.id !== props.currentProductId)
-        .slice(0, props.limit)
+    // Combiner et limiter à 6 produits maximum
+    const filtered = [...categoryProducts, ...otherProducts].slice(0, props.limit)
+    
+    console.log('Produits suggérés:', filtered)
+    console.log('Nombre de produits:', filtered.length)
+    
+    return filtered
 })
 
 onMounted(() => {
     if (sliderRef.value && suggestedProducts.value.length > 0) {
         new Swiper(sliderRef.value, {
-            slidesPerView: 'auto',
-            spaceBetween: 16,
+            slidesPerView: '3',
+            spaceBetween: 0,
             loop: true,
             modules: [Navigation],
             navigation: {
                 nextEl: '.product-suggestions__button-next',
                 prevEl: '.product-suggestions__button-prev',
+            },
+            pagination: {
+                el: '.product-suggestions__pagination',
+                clickable: true,
             },
         })
     }
@@ -97,6 +119,8 @@ onMounted(() => {
     padding: var(--padding-lg) var(--padding-sm);
     background-color: var(--color-beige);
     border-top: var(--border);
+    max-width: 100%;
+    display: block;
 
     &__title {
         font-family: 'Lovan', serif;
@@ -163,15 +187,9 @@ onMounted(() => {
         height: 100%;
         outline: var(--border);
         background-color: var(--color-beige);
-        transition: transform var(--transition), box-shadow var(--transition);
         text-decoration: none;
         color: inherit;
         cursor: pointer;
-
-        &:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
     }
     
     :deep(.swiper-slide) {
