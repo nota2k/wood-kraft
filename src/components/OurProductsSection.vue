@@ -1,43 +1,19 @@
 <script setup>
-// Import des images depuis assets/images
-import productImage01 from '@/assets/images/home-ourproducts-01.png'
-import productImage02 from '@/assets/images/home-ourproducts-02.png'
-import productImage03 from '@/assets/images/home-ourproducts-03.png'
-import productImage04 from '@/assets/images/home-ourproducts-04.png'
-import productImage05 from '@/assets/images/home-ourproducts-05.png'
+import { computed } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
+import { useProductsStore } from '@/stores/products'
 import { MoveRight } from 'lucide-vue-next'
-const products = [
-  {
-    name: 'Tables hexagonales',
-    image: productImage01,
-    price: '--'
-  },
-  {
-    name: 'Table d\'appoint',
-    image: productImage02,
-    price: '--'
-  },
-  {
-    name: 'Armoire',
-    image: productImage03,
-    price: '--'
-  },
-  {
-    name: 'Étagère',
-    image: productImage05,
-    price: '--'
-  },
-  {
-    name: 'Étagère',
-    image: productImage04,
-    price: '--'
-  },
-  {
-    name: 'Étagère',
-    image: productImage04,
-    price: '--'
-  }
-]
+
+const productsStore = useProductsStore()
+const router = useRouter()
+
+const products = computed(() => {
+  return productsStore.getAllProducts.slice(0, 6)
+})
+
+const handleMoreClick = () => {
+  router.push('/products')
+}
 </script>
 
 <template>
@@ -45,25 +21,30 @@ const products = [
     <div class="our-products__container">
       <h2 class="our-products__title">OUR PRODUCTS</h2>
       <div class="our-products__grid">
-        <div class="our-products__item" v-for="(product, index) in products" :key="index">
+        <RouterLink 
+          v-for="(product, index) in products" 
+          :key="product.id"
+          :to="`/product/${product.id}`"
+          :class="['our-products__item', `our-products__item--${index + 1}`]"
+        >
           <div class="our-products__image-wrapper">
             <img 
-              :src="product.image" 
+              :src="product.image || product.images[0]" 
               :alt="product.name" 
               class="our-products__image"
             />
           </div>
           <div class="our-products__info">
             <div class="our-products__label-wrapper">
-              <p class="our-products__label">Product</p>
+              <p class="our-products__label">{{ product.name }}</p>
             </div>
             <div class="our-products__price-wrapper">
               <p class="our-products__price">{{ product.price }} €</p>
             </div>
           </div>
-        </div>
+        </RouterLink>
       </div>
-      <button class="our-products__button">More <span class="our-products__button-icon"><MoveRight/></span></button>
+      <button class="our-products__button" @click="handleMoreClick">More <span class="our-products__button-icon"><MoveRight/></span></button>
     </div>
   </section>
 </template>
@@ -76,8 +57,6 @@ const products = [
   &__container {
     max-width: 1280px;
     margin: 0 auto;
-  grid-column: 1 / -1;
-
   }
   
   &__title {
@@ -88,32 +67,71 @@ const products = [
     margin-bottom: 4rem;
     text-align: center;
   }
-  
+
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
-    grid-template-rows: repeat(3, minmax(450px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, minmax(450px, auto));
+    gap: 0;
     margin-bottom: 3rem;
+    border: var(--border);
   }
   
   &__item {
     display: grid;
-    grid-template-rows: auto 110px;
-    grid-template-columns: 2fr 1fr;
-    flex-direction: column;
-    border: 2px solid var(--color-marron-light);
-    --line-offset: 2px;
-    --line-thickness: 2px;
+    grid-template-rows: 1fr 110px;
+    border: var(--border);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+    background-color: var(--color-beige);
 
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-    &:nth-child(4) {
+    // Position 1 : Top left
+    &--1 {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    // Position 2 : Top middle
+    &--2 {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    // Position 3 : Top right
+    &--3 {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    // Position 4 : Middle left
+    &--4 {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    // Position 5 : Middle right (GRAND - prend 2 lignes et 2 colonnes)
+    &--5 {
       grid-column: 2 / span 2;
       grid-row: 2 / span 2;
+    }
+
+    // Position 6 : Bottom left
+    &--6 {
+      grid-column: 1;
+      grid-row: 3;
     }
   }
   
   &__image-wrapper {
-    grid-column: 1 / 3;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     background-color: #f0f0f0;
   }
@@ -125,30 +143,25 @@ const products = [
   }
   
   &__info {
-    grid-column: 1 / -1;
-    height: 100%;
-    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-    outline: var(--line-thickness) solid var(--color-marron-light);
-    
+    border-top: var(--border);
   }
 
   &__label-wrapper {
-    padding: 1rem 2rem;
+    padding: var(--padding-sm) var(--padding-md);
     display: flex;
     align-items: center;
     flex-grow: 2;
+    border-right: var(--border);
     font-size: var(--font-md);
     color: var(--color-marron);
     font-weight: 300;
-    outline: 2px solid var(--color-marron-light);
   }
   
   &__price-wrapper {
-    padding: 1rem 2rem;
-
+    padding: var(--padding-sm) var(--padding-md);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -159,7 +172,6 @@ const products = [
   }
   
   &__button {
-
     max-width: var(--large-button);
     margin: 0 auto;
     text-align: left;
