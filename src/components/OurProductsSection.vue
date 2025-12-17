@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
 import { MoveRight } from 'lucide-vue-next'
@@ -15,6 +15,13 @@ const products = computed(() => {
 const handleMoreClick = () => {
   router.push('/products')
 }
+
+onMounted(async () => {
+  // Charger les produits si la liste est vide
+  if (productsStore.products.length === 0) {
+    await productsStore.fetchProducts({ per_page: 6 })
+  }
+})
 </script>
 
 <template>

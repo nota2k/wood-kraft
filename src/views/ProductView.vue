@@ -12,20 +12,33 @@ const productsStore = useProductsStore()
 const cartStore = useCartStore()
 
 const selectedColor = ref(null)
+const loading = ref(true)
 
 const product = computed(() => {
   const id = route.params.id
   return productsStore.getProductById(id)
 })
 
-onMounted(() => {
+onMounted(async () => {
+  const id = route.params.id
+  
+  // Charger le produit depuis l'API s'il n'est pas déjà en cache
   if (!product.value) {
-    // Si le produit n'existe pas, rediriger vers la page produits
-    router.push('/products')
-    return
+    try {
+      loading.value = true
+      await productsStore.fetchProduct(id)
+    } catch {
+      // Si le produit n'existe pas, rediriger vers la page produits
+      router.push('/products')
+      return
+    } finally {
+      loading.value = false
+    }
+  } else {
+    loading.value = false
   }
   
-  if (product.value.colorVariations && product.value.colorVariations.length > 0) {
+  if (product.value && product.value.colorVariations && product.value.colorVariations.length > 0) {
     selectedColor.value = product.value.colorVariations[0]
   }
 })
@@ -34,15 +47,25 @@ const handleColorSelect = (color) => {
   selectedColor.value = color
 }
 
-const getCategoryLabel = (category) => {
-  const labels = {
-    'tables': 'Tables',
-    'chairs': 'Chaises',
-    'storage': 'Rangements',
-    'shelves': 'Étagères',
-    'decorative': 'Décoratif'
+const getCategoryLabel = (categories) => {
+  if (!categories || categories.length === 0) return ''
+  // Utiliser le nom de la première catégorie
+  return categories[0].name || categories[0].slug
+}
+
+/**
+ * Récupère le chemin de l'image depuis la structure de l'API
+ */
+const getImagePath = (image) => {
+  // Si image est un objet avec image_path
+  if (typeof image === 'object' && image.image_path) {
+    return image.image_path
   }
-  return labels[category] || category
+  // Si image est une string (ancien format)
+  if (typeof image === 'string') {
+    return image
+  }
+  return ''
 }
 
 const breadcrumbItems = computed(() => {
@@ -50,7 +73,7 @@ const breadcrumbItems = computed(() => {
   
   return [
     { label: 'Produits', to: '/products' },
-    { label: product.value.name }
+    { label: product.value.title }
   ]
 })
 
@@ -64,21 +87,25 @@ const handleAddToCart = () => {
 <template>
   <main class="product-view">
     <Breadcrumb :items="breadcrumbItems" />
-    <div class="product-view__container">
+    <div v-if="loading" class="product-view__loading">Chargement...</div>
+    <div v-else-if="product" class="product-view__container">
       <!-- Images produit -->
       <div class="product-view__gallery" v-if="product">
         <div 
           v-for="(image, index) in product.images" 
-          :key="index"
+          :key="image.id || index"
           class="product-view__image-item"
         >
-          <img :src="image" :alt="`${product.name} - vue ${index + 1}`" />
+          <img 
+            :src="getImagePath(image)" 
+            :alt="`${product.title} - vue ${index + 1}`" 
+          />
         </div>
       </div>
 
       <!-- Informations produit -->
       <div class="product-view__info" v-if="product">
-        <h1 class="product-view__title">{{ product.name }}</h1>
+        <h1 class="product-view__title">{{ product.title }}</h1>
         <p class="product-view__price">{{ product.price }} €</p>
         
         <div class="product-view__description">
@@ -91,9 +118,9 @@ const handleAddToCart = () => {
           <div class="product-view__colors-list">
             <button
               v-for="colorVar in product.colorVariations"
-              :key="colorVar.name"
+              :key="colorVar.id || colorVar.name"
               @click="handleColorSelect(colorVar)"
-              :class="['product-view__color-btn', { 'product-view__color-btn--active': selectedColor?.name === colorVar.name }]"
+              :class="['product-view__color-btn', { 'product-view__color-btn--active': selectedColor?.value === colorVar.value }]"
               :style="{ backgroundColor: colorVar.color }"
               :title="colorVar.name"
               :disabled="!colorVar.available"
@@ -105,11 +132,11 @@ const handleAddToCart = () => {
         <div class="product-view__details">
           <div class="product-view__detail-item">
             <span class="product-view__detail-label">Catégorie</span>
-            <span class="product-view__detail-value">{{ getCategoryLabel(product.category) }}</span>
+            <span class="product-view__detail-value">{{ getCategoryLabel(product.categories) }}</span>
           </div>
           <div class="product-view__detail-item">
             <span class="product-view__detail-label">Matériau</span>
-            <span class="product-view__detail-value">{{ product.material }}</span>
+            <span class="product-view__detail-value">{{ product.materials }}</span>
           </div>
           <div class="product-view__detail-item">
             <span class="product-view__detail-label">Dimensions</span>
@@ -123,12 +150,13 @@ const handleAddToCart = () => {
         </div>
       </div>
     </div>
+    <div v-else class="product-view__error">Produit non trouvé</div>
     
     <!-- Produits suggérés -->
     <ProductSuggestions 
-      v-if="product"
+      v-if="product && !loading"
       :current-product-id="product.id"
-      :category="product.category"
+      :category="product.categories?.[0]?.slug"
       :limit="4"
     />
   </main>
@@ -333,6 +361,14 @@ const handleAddToCart = () => {
     color: var(--color-marron);
     font-weight: 300;
     margin: 0;
+  }
+  
+  &__loading,
+  &__error {
+    padding: var(--padding-lg);
+    text-align: center;
+    font-size: var(--font-md);
+    color: var(--color-marron);
   }
 }
 </style>

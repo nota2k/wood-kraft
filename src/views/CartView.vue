@@ -48,6 +48,24 @@ const handleContinueShopping = () => {
     router.push('/products')
 }
 
+/**
+ * Récupère l'image du produit depuis la structure de l'API
+ */
+const getProductImage = (product) => {
+    if (product.image) {
+        return product.image
+    }
+    if (product.images && product.images.length > 0) {
+        if (typeof product.images[0] === 'object' && product.images[0].image_path) {
+            return product.images[0].image_path
+        }
+        if (typeof product.images[0] === 'string') {
+            return product.images[0]
+        }
+    }
+    return ''
+}
+
 const breadcrumbItems = [
     { label: 'Produits', to: '/products' },
     { label: 'Panier' }
@@ -83,12 +101,12 @@ const breadcrumbItems = [
                         class="cart-view__item"
                     >
                         <div class="cart-view__item-image">
-                            <img :src="item.product.image" :alt="item.product.name" />
+                            <img :src="getProductImage(item.product)" :alt="item.product.title" />
                         </div>
                         <div class="cart-view__item-info">
-                            <h2 class="cart-view__item-name">{{ item.product.name }}</h2>
+                            <h2 class="cart-view__item-name">{{ item.product.title }}</h2>
                             <p v-if="item.selectedColor" class="cart-view__item-color">
-                                Couleur: {{ item.selectedColor.name }}
+                                Couleur: {{ item.selectedColor.name || item.selectedColor.value }}
                             </p>
                             <p class="cart-view__item-price">{{ item.product.price }} €</p>
                         </div>

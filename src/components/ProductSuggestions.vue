@@ -30,17 +30,18 @@ const suggestedProducts = computed(() => {
     let otherProducts = []
 
     if (props.category) {
-        // Produits de la même catégorie
+        // Produits de la même catégorie (utiliser le slug)
         categoryProducts = productsStore.getProductsByCategory(props.category)
             .filter(product => product.id !== props.currentProductId)
         
         // Si on n'a pas assez de produits dans la catégorie, compléter avec d'autres produits
         if (categoryProducts.length < props.limit) {
             otherProducts = productsStore.getAllProducts
-                .filter(product => 
-                    product.id !== props.currentProductId && 
-                    product.category !== props.category
-                )
+                .filter(product => {
+                    const isNotCurrent = product.id !== props.currentProductId
+                    const isNotSameCategory = !product.categories.some(cat => cat.slug === props.category)
+                    return isNotCurrent && isNotSameCategory
+                })
                 .slice(0, props.limit - categoryProducts.length)
         }
     } else {
@@ -49,16 +50,19 @@ const suggestedProducts = computed(() => {
             .filter(product => product.id !== props.currentProductId)
     }
 
-    // Combiner et limiter à 6 produits maximum
+    // Combiner et limiter au nombre de produits demandé
     const filtered = [...categoryProducts, ...otherProducts].slice(0, props.limit)
-    
-    console.log('Produits suggérés:', filtered)
-    console.log('Nombre de produits:', filtered.length)
     
     return filtered
 })
 
-onMounted(() => {
+onMounted(async () => {
+    // Charger les produits depuis l'API s'ils ne sont pas déjà chargés
+    if (productsStore.products.length === 0) {
+        await productsStore.fetchProducts({ per_page: 20 })
+    }
+    
+    // Initialiser le slider Swiper
     if (sliderRef.value && suggestedProducts.value.length > 0) {
         new Swiper(sliderRef.value, {
             slidesPerView: '3',

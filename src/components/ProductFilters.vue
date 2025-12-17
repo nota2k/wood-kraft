@@ -1,15 +1,17 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useProductsStore } from '@/stores/products'
 
 const emit = defineEmits(['update-filters'])
 
-const categories = ref([
-    { value: 'tables', label: 'Tables' },
-    { value: 'chairs', label: 'Chaises' },
-    { value: 'storage', label: 'Rangements' },
-    { value: 'shelves', label: 'Étagères' },
-    { value: 'decorative', label: 'Décoratif' }
-])
+const productsStore = useProductsStore()
+
+const categories = computed(() => {
+  return productsStore.categories.map(cat => ({
+    value: cat.slug,
+    label: cat.name
+  }))
+})
 
 const selectedCategory = ref('')
 const showNewOnly = ref(false)
@@ -18,6 +20,18 @@ const maxPrice = ref(5000)
 const priceRange = ref({
     min: 0,
     max: 5000
+})
+
+onMounted(async () => {
+  // Charger les catégories depuis l'API
+  await productsStore.fetchCategories()
+  
+  // Déterminer le prix max depuis les produits si disponibles
+  if (productsStore.products.length > 0) {
+    const maxPriceValue = Math.max(...productsStore.products.map(p => p.price))
+    maxPrice.value = Math.ceil(maxPriceValue / 100) * 100
+    priceRange.value.max = maxPrice.value
+  }
 })
 
 const getMinPercent = () => {

@@ -80,6 +80,24 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener('keydown', handleKeydown)
 })
+
+/**
+ * Récupère l'image du produit depuis la structure de l'API
+ */
+const getProductImage = (product) => {
+    if (product.image) {
+        return product.image
+    }
+    if (product.images && product.images.length > 0) {
+        if (typeof product.images[0] === 'object' && product.images[0].image_path) {
+            return product.images[0].image_path
+        }
+        if (typeof product.images[0] === 'string') {
+            return product.images[0]
+        }
+    }
+    return ''
+}
 </script>
 
 <template>
@@ -106,12 +124,12 @@ onUnmounted(() => {
                             class="cart-modal__item"
                         >
                             <div class="cart-modal__item-image">
-                                <img :src="item.product.image" :alt="item.product.name" />
+                                <img :src="getProductImage(item.product)" :alt="item.product.title" />
                             </div>
                             <div class="cart-modal__item-info">
-                                <h3 class="cart-modal__item-name">{{ item.product.name }}</h3>
+                                <h3 class="cart-modal__item-name">{{ item.product.title }}</h3>
                                 <p v-if="item.selectedColor" class="cart-modal__item-color">
-                                    Couleur: {{ item.selectedColor.name }}
+                                    Couleur: {{ item.selectedColor.name || item.selectedColor.value }}
                                 </p>
                                 <p class="cart-modal__item-price">{{ item.product.price }} €</p>
                             </div>

@@ -11,16 +11,43 @@ defineProps({
         required: true
     }
 })
+
+/**
+ * Récupère l'image du produit depuis la structure de l'API
+ */
+function getProductImage(product) {
+    // Si product.image existe (image principale calculée)
+    if (product.image) {
+        return product.image
+    }
+    
+    // Si images est un tableau d'objets avec image_path
+    if (product.images && product.images.length > 0) {
+        if (typeof product.images[0] === 'object' && product.images[0].image_path) {
+            return product.images[0].image_path
+        }
+        // Si images est un tableau de strings
+        if (typeof product.images[0] === 'string') {
+            return product.images[0]
+        }
+    }
+    
+    return ''
+}
 </script>
 
 <template>
     <RouterLink :to="`/product/${product.id}`" class="card-product">
         <div class="card-product__image-wrapper">
-            <img :src="product.image || product.images[0]" :alt="product.name" class="card-product__image" />
+            <img 
+                :src="getProductImage(product)" 
+                :alt="product.title" 
+                class="card-product__image" 
+            />
         </div>
         <div class="card-product__info">
             <div class="card-product__label-wrapper">
-                <p class="card-product__label">{{ product.name }}</p>
+                <p class="card-product__label">{{ product.title }}</p>
             </div>
             <div class="card-product__price-wrapper">
                 <p class="card-product__price">{{ product.price }} €</p>
