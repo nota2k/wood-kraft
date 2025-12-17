@@ -67,7 +67,7 @@ const handleCartClose = () => {
       <div class="nav-wrapper">
       <nav class="header__nav">
         <router-link to="/products" class="header__nav-link">Products</router-link>
-        <a href="#" class="header__nav-link">About</a>
+        <router-link to="/about" class="header__nav-link">About</router-link>
         <a href="#" class="header__nav-link">Contact</a>
       </nav>
       <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
