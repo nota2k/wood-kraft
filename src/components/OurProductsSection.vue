@@ -60,10 +60,10 @@ const handleMoreClick = () => {
     grid-template-rows: repeat(3, minmax(350px, 1fr));
     gap: 0;
     margin-bottom: 3rem;
-    border: 2px solid var(--color-marron-dark);
+    border: 1px solid var(--color-marron-dark);
 
     :deep(.card-product) {
-      border: 2px solid var(--color-marron-dark);
+      border: 1px solid var(--color-marron-dark);
       border-radius: 0;
 
       .card-product__image-wrapper {
@@ -74,7 +74,7 @@ const handleMoreClick = () => {
     
 
     :deep(.card-product__info) {
-      border-top: 2px solid var(--color-marron-dark);
+      border-top: 1px solid var(--color-marron-dark);
     }
 
     :deep(.card-product__label-wrapper) {
