@@ -277,7 +277,7 @@ const breadcrumbItems = [
     }
 
     &__item-name {
-        font-size: var(--font-lg);
+        font-size: var(--font-md);
         color: var(--color-marron);
         font-weight: 400;
         margin: 0;
@@ -309,9 +309,6 @@ const breadcrumbItems = [
         display: flex;
         align-items: center;
         gap: var(--padding-xs);
-        border: var(--border);
-        border-radius: calc(var(--border-radius) / 2);
-        padding: var(--padding-xs);
     }
 
     &__quantity-btn {
@@ -361,7 +358,7 @@ const breadcrumbItems = [
     }
 
     &__summary {
-        padding: var(--padding-md);
+        padding: var(--padding-sm);
         border: var(--border);
         border-radius: var(--border-radius);
         background-color: var(--color-beige);
@@ -374,31 +371,28 @@ const breadcrumbItems = [
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: var(--padding-sm) 0;
+        padding: 0;
         border-bottom: var(--border);
         margin-bottom: var(--padding-sm);
     }
 
     &__total-label {
-        font-size: var(--font-lg);
+        font-size: var(--font-md);
         color: var(--color-marron);
         font-weight: 400;
     }
 
     &__total-price {
-        font-size: var(--font-xl);
+        font-size: var(--font-md);
         color: var(--color-marron);
         font-weight: 500;
     }
 
     &__button {
-        width: 100%;
-        padding: var(--padding-sm);
-        border: var(--border);
-        border-radius: var(--border-radius);
-        background-color: transparent;
-        color: var(--color-marron);
-        font-size: var(--font-md);
+        // width: 100%;
+        padding: var(--padding-xs) var(--padding-sm);
+        border-radius: 100px;
+        // font-size: var(--font-md);
         font-weight: 400;
         cursor: pointer;
         transition: opacity var(--transition);
