@@ -1,4 +1,5 @@
-const API_BASE_URL = 'http://127.0.0.1:8888/api/v1'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8888/api/v1'
+const APP_URL = import.meta.env.VITE_APP_URL || 'http://127.0.0.1:8888'
 
 /**
  * Service API pour communiquer avec le backend Laravel
@@ -125,7 +126,7 @@ class ApiService {
   // ===== AUTH =====
 
   async getCsrfCookie() {
-    await fetch(`http://127.0.0.1:8888/sanctum/csrf-cookie`, {
+    await fetch(`${APP_URL}/sanctum/csrf-cookie`, {
       credentials: 'include',
     })
   }
