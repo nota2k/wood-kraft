@@ -30,6 +30,40 @@ const router = createRouter({
       component: () => import('../views/CartView.vue'),
     },
 
+    {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/LoginView.vue'),
+    meta: { guest: true }
+  },
+  {
+    path: '/compte',
+    component: () => import('../views/account/AccountLayout.vue'),
+    meta: { auth: true },
+    children: [
+      {
+        path: '',
+        name: 'account-dashboard',
+        component: () => import('../views/account/AccountDashboardView.vue')
+      },
+      {
+        path: 'commandes',
+        name: 'account-orders',
+        component: () => import('../views/account/AccountOrdersView.vue')
+      },
+      {
+        path: 'commandes/:id',
+        name: 'account-order-detail',
+        component: () => import('../views/account/AccountOrderDetailView.vue')
+      },
+      {
+        path: 'profil',
+        name: 'account-profile',
+        component: () => import('../views/account/AccountProfileView.vue')
+      }
+    ]
+  },
+
     // ===== ADMIN =====
     {
       path: '/admin/login',
@@ -98,6 +132,28 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
+})
+
+router.beforeEach((to, from, next) => {
+  const user = JSON.parse(localStorage.getItem('customer_user') || 'null')
+  const isAuthenticated = !!user
+
+  // Protection Admin
+  if (to.path.startsWith('/admin') && to.name !== 'admin-login' && !isAuthenticated) {
+    return next({ name: 'admin-login' })
+  }
+
+  // Protection Client (Auth)
+  if (to.meta.auth && !isAuthenticated) {
+    return next({ name: 'login' })
+  }
+
+  // Protection Client (Guest - e.g. /login)
+  if (to.meta.guest && isAuthenticated) {
+    return next({ name: 'account-dashboard' })
+  }
+
+  next()
 })
 
 export default router

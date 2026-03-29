@@ -10,15 +10,29 @@ class ApiService {
   }
 
   /**
+   * Récupère un cookie par son nom
+   */
+  getCookie(name) {
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop().split(';').shift()
+  }
+
+  /**
    * Effectue une requête HTTP
    */
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`
+    
+    // Récupération du token CSRF depuis le cookie (Sanctum le met dans XSRF-TOKEN)
+    const csrfToken = this.getCookie('XSRF-TOKEN')
+    
     const config = {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        ...(csrfToken ? { 'X-XSRF-TOKEN': decodeURIComponent(csrfToken) } : {}),
         ...options.headers
       },
       ...options
@@ -54,11 +68,16 @@ class ApiService {
    */
   async requestForm(endpoint, formData, method = 'POST') {
     const url = `${this.baseURL}${endpoint}`
+    
+    // Récupération du token CSRF
+    const csrfToken = this.getCookie('XSRF-TOKEN')
+
     const config = {
       method,
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
+        ...(csrfToken ? { 'X-XSRF-TOKEN': decodeURIComponent(csrfToken) } : {}),
       },
       body: formData
     }
@@ -134,6 +153,11 @@ class ApiService {
   async login(credentials) {
     await this.getCsrfCookie()
     return this.post('/auth/login', credentials)
+  }
+
+  async register(data) {
+    await this.getCsrfCookie()
+    return this.post('/auth/register', data)
   }
 
   async logout() {

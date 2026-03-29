@@ -1,8 +1,9 @@
 <script setup>
-import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, watch, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import MiniCart from './MiniCart.vue'
 import CartModal from './CartModal.vue'
 import { animate, svg } from 'animejs'
+import { User } from 'lucide-vue-next'
 
 defineOptions({
   name: 'SiteHeader'
@@ -11,6 +12,16 @@ defineOptions({
 const isVisible = ref(true)
 const isCartOpen = ref(false)
 const isNavOpen = ref(false)
+const user = ref(null)
+
+const checkUser = () => {
+  user.value = JSON.parse(localStorage.getItem('customer_user') || 'null')
+}
+
+const accountRoute = computed(() => {
+  return user.value ? { name: 'account-dashboard' } : { name: 'login' }
+})
+
 let lastScrollY = 0
 
 const handleScroll = () => {
@@ -36,10 +47,13 @@ const handleScroll = () => {
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
+  window.addEventListener('auth-changed', checkUser)
+  checkUser()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('auth-changed', checkUser)
 })
 
 const handleCartClick = () => {
@@ -169,6 +183,9 @@ watch(isNavOpen, async (newValue) => {
             <path ref="path3Ref" :d="closedPaths[2]" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           </svg>
         </button>
+        <RouterLink :to="accountRoute" class="account-link" aria-label="Compte">
+          <User :size="24" />
+        </RouterLink>
         <MiniCart @click="handleCartClick" />
       </div>
     </div>
@@ -292,8 +309,20 @@ watch(isNavOpen, async (newValue) => {
   .nav-wrapper {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
     color: var(--color-marron-dark);
+  }
+
+  .account-link {
+    display: flex;
+    align-items: center;
+    color: inherit;
+    transition: transform 0.2s, opacity 0.2s;
+
+    &:hover {
+      opacity: 0.7;
+      transform: scale(1.1);
+    }
   }
 
   &__menu-toggle {
