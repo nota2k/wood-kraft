@@ -74,12 +74,8 @@ const router = createRouter({
       ],
     },
   ],
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition
-    }
-    return { top: 0 }
-  },
+  // Le scroll est géré par Lenis + GSAP dans App.vue
+  scrollBehavior() { return false },
 })
 
 router.beforeEach((to, from, next) => {

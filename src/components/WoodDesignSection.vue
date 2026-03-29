@@ -1,17 +1,27 @@
 <script setup>
-// Wood design section component
+import { ref, onMounted } from 'vue'
+import { useScrollReveal } from '@/composables/useScrollReveal'
+
+const imageWrapper = ref(null)
+const content = ref(null)
+const { revealFrom } = useScrollReveal()
+
+onMounted(() => {
+  revealFrom(imageWrapper.value, { x: -80 })
+  revealFrom(content.value, { x: 80 }, { start: 'top 80%' })
+})
 </script>
 
 <template>
   <section class="wood-design">
-      <div class="wood-design__image-wrapper">
+      <div ref="imageWrapper" class="wood-design__image-wrapper">
         <img 
           src="@/assets/images/home-canard.png" 
           alt="Canard en bois" 
           class="wood-design__image"
         />
       </div>
-      <div class="wood-design__content">
+      <div ref="content" class="wood-design__content">
         <h2 class="wood-design__title">WOOD DESIGN</h2>
         <p class="wood-design__text">
           Chez WOOD & KRAFT, nous créons des pièces uniques qui allient savoir-faire artisanal et design contemporain. 

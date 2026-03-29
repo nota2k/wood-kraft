@@ -1,13 +1,23 @@
 <script setup>
-// Image gallery component
+import { ref, onMounted } from 'vue'
+import { useScrollReveal } from '@/composables/useScrollReveal'
+
+const item1 = ref(null)
+const item2 = ref(null)
+const { revealFrom } = useScrollReveal()
+
+onMounted(() => {
+  revealFrom(item1.value, { x: -60, y: 30 })
+  revealFrom(item2.value, { x: 60, y: 30 }, { start: 'top 80%' })
+})
 </script>
 
 <template>
   <section class="image-gallery">
-      <div class="image-gallery__item">
+      <div ref="item1" class="image-gallery__item">
         <img src="@/assets/images/home-transition-01.png" alt="Fleur dans un vase" class="image-gallery__image" />
       </div>
-      <div class="image-gallery__item">
+      <div ref="item2" class="image-gallery__item">
         <img src="@/assets/images/home-transition-02.png" alt="Plantes dans des pots en bois"
           class="image-gallery__image" />
       </div>

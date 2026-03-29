@@ -1,25 +1,53 @@
 <script setup>
-// Hero section component
+import { ref, onMounted, onUnmounted } from 'vue'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const imageWrapper = ref(null)
+const titleWrapper = ref(null)
+const subtitle = ref(null)
+const imageSmall = ref(null)
+
+let ctx
+
+onMounted(() => {
+  ctx = gsap.context(() => {
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+
+    gsap.set([titleWrapper.value, subtitle.value], { autoAlpha: 0, y: 40 })
+    gsap.set(imageWrapper.value, { scale: 1.06, autoAlpha: 0 })
+    gsap.set(imageSmall.value, { autoAlpha: 0, x: 20 })
+
+    tl.to(imageWrapper.value, { scale: 1, autoAlpha: 1, duration: 1.4 })
+      .to(titleWrapper.value, { autoAlpha: 1, y: 0, duration: 1 }, '-=0.9')
+      .to(subtitle.value, { autoAlpha: 1, y: 0, duration: 0.8 }, '-=0.6')
+      .to(imageSmall.value, { autoAlpha: 1, x: 0, duration: 0.7 }, '-=0.5')
+  })
+})
+
+onUnmounted(() => ctx?.revert())
 </script>
 
 <template>
   <section class="hero">
-    <div class="hero__image-wrapper">
-      <img 
-        src="@/assets/images/hero-banner.png" 
-        alt="Wood design" 
+    <div ref="imageWrapper" class="hero__image-wrapper">
+      <img
+        src="@/assets/images/hero-banner.png"
+        alt="Wood design"
         class="hero__image"
       />
     </div>
-    <div class="hero__image-small">
-      <img 
-        src="@/assets/images/hero-banner-small.png" 
-        alt="Wood design" 
+    <div ref="imageSmall" class="hero__image-small">
+      <img
+        src="@/assets/images/hero-banner-small.png"
+        alt="Wood design"
         class="hero__image-small"
       />
     </div>
     <div class="hero__content">
-      <div class="hero__title-wrapper">
+      <div ref="titleWrapper" class="hero__title-wrapper">
         <svg width="734" height="270" viewBox="0 0 734 270" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path d="M1.65414 2.63564V1.31781H29.4438V2.63564C21.8347 2.63564 23.3234 7.08329 27.4588 16.308L67.9853 107.897L90.3162 57.8194L71.7898 16.1433C67.1582 5.93019 64.677 2.47091 59.5492 2.47091V1.15309H87.3388V2.47091C79.7297 2.47091 81.2185 6.91856 85.3538 16.1433L125.88 107.732L156.978 38.2168C167.73 14.1666 171.369 2.30619 155.655 2.47091V1.15309H184.437V2.47091C173.52 2.47091 169.384 14.1666 158.632 38.2168L126.707 109.544L129.85 116.462C126.542 116.462 121.249 116.957 117.775 119.263L91.1433 59.6314L68.8124 109.709L71.9553 116.627C68.647 116.627 63.3537 117.121 59.88 119.428L13.8948 16.308C9.2632 6.09493 6.78199 2.63564 1.65414 2.63564Z" fill="#7A572F"/>
         <path d="M253.606 117.945C218.704 117.945 194.388 94.2242 194.388 58.9725C194.388 23.7208 218.704 0 253.606 0C288.509 0 312.824 23.7208 312.824 58.9725C312.824 94.2242 288.509 117.945 253.606 117.945ZM253.606 2.14145C221.516 2.14145 207.455 30.6394 207.455 58.9725C207.455 87.3057 221.516 115.804 253.606 115.804C285.696 115.804 299.757 87.3057 299.757 58.9725C299.757 30.6394 285.696 2.14145 253.606 2.14145Z" fill="#7A572F"/>
@@ -33,7 +61,7 @@
         <path d="M627.804 135.582H725.068L734 165.068H732.677C724.406 138.877 687.849 137.724 682.391 137.724V235.901C682.391 247.926 687.022 249.574 689.504 249.574V250.892H663.368V249.574C665.849 249.574 670.481 247.926 670.481 235.901V137.724C665.022 137.724 628.466 138.877 620.195 165.068H618.872L627.804 135.582Z" fill="currentColor"/>
         </svg>
       </div>
-      <p class="hero__subtitle">wood design</p>
+      <p ref="subtitle" class="hero__subtitle">wood design</p>
     </div>
   </section>
 </template>

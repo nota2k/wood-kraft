@@ -216,7 +216,7 @@ const getProductImage = (product) => {
 
     &__title {
         font-family: 'Lovan', serif;
-        font-size: var(--font-lg);
+        font-size: clamp(1.75rem, 5vw, 2.25rem);
         color: var(--color-marron);
         font-weight: 300;
         margin: 0;
@@ -303,21 +303,22 @@ const getProductImage = (product) => {
     }
 
     &__item-name {
-        font-size: var(--font-md);
+        font-size: clamp(0.95rem, 2.5vw, 1.1rem);
         color: var(--color-marron);
         font-weight: 400;
         margin: 0;
+        line-height: 1.3;
     }
 
     &__item-color {
-        font-size: var(--font-sm);
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
         color: var(--color-marron);
         opacity: 0.7;
         margin: 0;
     }
 
     &__item-price {
-        font-size: var(--font-md);
+        font-size: clamp(1rem, 2.5vw, 1.15rem);
         color: var(--color-marron);
         font-weight: 500;
         margin: 0;
@@ -394,13 +395,13 @@ const getProductImage = (product) => {
     }
 
     &__total-label {
-        font-size: var(--font-md);
+        font-size: clamp(1rem, 2.5vw, 1.15rem);
         color: var(--color-marron);
         font-weight: 400;
     }
 
     &__total-price {
-        font-size: var(--font-lg);
+        font-size: clamp(1.4rem, 4vw, 1.75rem);
         color: var(--color-marron);
         font-weight: 500;
     }

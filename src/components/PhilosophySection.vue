@@ -1,12 +1,27 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import { MoveRight } from 'lucide-vue-next'
+import { useScrollReveal } from '@/composables/useScrollReveal'
+
+const titleOverlay = ref(null)
+const imageWrapper = ref(null)
+const content = ref(null)
+const button = ref(null)
+const { revealFrom } = useScrollReveal()
+
+onMounted(() => {
+  revealFrom(titleOverlay.value, { y: -50, scale: 0.97 })
+  revealFrom(imageWrapper.value, { x: -60 }, { start: 'top 80%' })
+  revealFrom(content.value, { x: 60, y: 20 }, { start: 'top 80%' })
+  revealFrom(button.value, { y: 20 }, { start: 'top 90%' })
+})
 </script>
 
 <template>
   <section class="philosophy">
     <div class="philosophy__container">
-      <h2 class="philosophy__title-overlay">PHILOSOPHY</h2>
-      <div class="philosophy__image-wrapper">
+      <h2 ref="titleOverlay" class="philosophy__title-overlay">PHILOSOPHY</h2>
+      <div ref="imageWrapper" class="philosophy__image-wrapper">
         
         <img 
           src="@/assets/images/home-philosophy.png" 
@@ -14,7 +29,7 @@ import { MoveRight } from 'lucide-vue-next'
           class="philosophy__image"
         />
       </div>
-      <div class="philosophy__content">
+      <div ref="content" class="philosophy__content">
         <p class="philosophy__text">
           Pour nous, le bois est un matériau vivant qui évolue avec le temps. Nous choisissons d'accompagner 
           cette évolution plutôt que de la contraindre. Chaque pièce que nous créons est pensée pour durer, 
@@ -22,7 +37,7 @@ import { MoveRight } from 'lucide-vue-next'
           la qualité, la durabilité et l'authenticité.
         </p>
       </div>
-        <button class="philosophy__button-text">More <span class="philosophy__button-icon"><MoveRight/></span></button>
+        <button ref="button" class="philosophy__button-text">More <span class="philosophy__button-icon"><MoveRight/></span></button>
     </div>
   </section>
 </template>

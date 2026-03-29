@@ -156,7 +156,7 @@ const resetFilters = () => {
     background-color: var(--color-beige);
     border: 2px solid var(--color-marron);
     border-radius: 20px;
-    max-width: calc(50% - var(--padding-xs));
+    // max-width: calc(50% - var(--padding-xs));
 
     h3{
         margin-bottom: -25px;

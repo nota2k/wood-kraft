@@ -1,27 +1,41 @@
 <script setup>
-// About us section component
+import { ref, onMounted } from 'vue'
+import { useScrollReveal } from '@/composables/useScrollReveal'
+
+const imageWrapper = ref(null)
+const secondImage = ref(null)
+const titleOverlay = ref(null)
+const content = ref(null)
+const { revealFrom } = useScrollReveal()
+
+onMounted(() => {
+  revealFrom(imageWrapper.value, { x: -50, y: 30 })
+  revealFrom(secondImage.value, { x: 50, y: 30 }, { start: 'top 75%' })
+  revealFrom(titleOverlay.value, { y: -40, scale: 0.95 }, { start: 'top 80%' })
+  revealFrom(content.value, { y: 50 }, { start: 'top 80%' })
+})
 </script>
 
 <template>
   <section class="about-us">
-      <div class="about-us__image-wrapper">
+      <div ref="imageWrapper" class="about-us__image-wrapper">
         <div class="about-us__image-wrapper-inner">
-        <img 
-          src="@/assets/images/home-aboutus.png" 
-          alt="Artisan travaillant le bois" 
+        <img
+          src="@/assets/images/home-aboutus.png"
+          alt="Artisan travaillant le bois"
           class="about-us__image"
         />
         </div>
       </div>
-      <div class="about-us__second-image-wrapper">
-        <img 
-          src="@/assets/images/home-aboutus-02.png" 
-          alt="Artisan travaillant le bois" 
+      <div ref="secondImage" class="about-us__second-image-wrapper">
+        <img
+          src="@/assets/images/home-aboutus-02.png"
+          alt="Artisan travaillant le bois"
           class="about-us__second-image"
         />
       </div>
-      <div class="about-us__content">
-        <h2 class="about-us__title-overlay">ABOUT US</h2>
+      <div ref="content" class="about-us__content">
+        <h2 ref="titleOverlay" class="about-us__title-overlay">ABOUT US</h2>
 
         <p class="about-us__text">
           Derrière chaque création se cache un ébéniste passionné, amoureux du travail manuel et du détail. 

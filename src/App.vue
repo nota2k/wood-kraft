@@ -9,9 +9,31 @@
 </template>
 
 <script setup>
-import { RouterView } from 'vue-router'
+import { onMounted, onUnmounted, watch } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
+import { initSmoothScroll, destroySmoothScroll, getLenis } from './composables/useSmoothScroll'
+
+onMounted(() => {
+  initSmoothScroll()
+})
+
+onUnmounted(() => {
+  destroySmoothScroll()
+})
+
+// Scroll en haut à chaque changement de route
+const route = useRoute()
+watch(
+  () => route.path,
+  () => {
+    const lenis = getLenis()
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true })
+    }
+  }
+)
 </script>
 
 <style lang="scss">

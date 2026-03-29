@@ -6,6 +6,12 @@ import ProductBanner from '@/components/ProductBanner.vue'
 import ProductListing from '@/components/ProductListing.vue'
 import ProductFilters from '@/components/ProductFilters.vue'
 
+const productsSection = ref(null)
+
+const scrollToProducts = () => {
+  productsSection.value?.scrollIntoView({ behavior: 'smooth' })
+}
+
 // Import des images
 import bannerImg from '@/assets/images/hero-banner.png'
 
@@ -89,13 +95,16 @@ onMounted(async () => {
 
 <template>
   <main class="products-view">
-    <ProductBanner 
+    <ProductBanner
       title="OUR PRODUCTS"
       subtitle="Découvrez notre collection de meubles en bois"
       :banner-image="bannerImage"
+      @scroll-down="scrollToProducts"
     />
-    <ProductFilters @update-filters="handleFilters" />
-    <ProductListing :products="filteredProducts" />
+    <div ref="productsSection" class="products-section">
+      <ProductFilters @update-filters="handleFilters" />
+      <ProductListing :products="filteredProducts" />
+    </div>
   </main>
 </template>
 
@@ -105,6 +114,12 @@ onMounted(async () => {
   background-color: var(--color-beige);
   min-height: 100vh;
   max-width: 100%;
+}
+
+.products-section {
+  padding: var(--padding-md);
+  max-width: 100%;
+  
 }
 </style>
 

@@ -1,12 +1,17 @@
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
 import { MoveRight } from 'lucide-vue-next'
 import CardProduct from './CardProduct.vue'
+import { useScrollReveal } from '@/composables/useScrollReveal'
 
 const productsStore = useProductsStore()
 const router = useRouter()
+const titleRef = ref(null)
+const gridRef = ref(null)
+const buttonRef = ref(null)
+const { revealFrom, revealStagger } = useScrollReveal()
 
 const products = computed(() => {
   return productsStore.getAllProducts.slice(0, 6)
@@ -17,18 +22,21 @@ const handleMoreClick = () => {
 }
 
 onMounted(async () => {
-  // Charger les produits si la liste est vide
   if (productsStore.products.length === 0) {
     await productsStore.fetchProducts({ per_page: 6 })
   }
+
+  revealFrom(titleRef.value, { y: 40 })
+  revealStagger(gridRef.value?.querySelectorAll('.card-product'), {}, { trigger: gridRef.value, start: 'top 80%' })
+  revealFrom(buttonRef.value, { y: 20 }, { start: 'top 90%' })
 })
 </script>
 
 <template>
   <section class="our-products">
     <div class="our-products__container">
-      <h2 class="our-products__title">OUR PRODUCTS</h2>
-      <div class="our-products__grid">
+      <h2 ref="titleRef" class="our-products__title">OUR PRODUCTS</h2>
+      <div ref="gridRef" class="our-products__grid">
         <CardProduct 
           v-for="(product, index) in products" 
           :key="product.id"
@@ -36,7 +44,7 @@ onMounted(async () => {
           :class="`our-products__item--${index + 1}`"
         />
       </div>
-      <button class="our-products__button" @click="handleMoreClick">More <span class="our-products__button-icon"><MoveRight/></span></button>
+      <button ref="buttonRef" class="our-products__button" @click="handleMoreClick">More <span class="our-products__button-icon"><MoveRight/></span></button>
     </div>
   </section>
 </template>
@@ -64,8 +72,9 @@ onMounted(async () => {
   &__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, minmax(350px, 1fr));
+    grid-auto-rows: minmax(350px, auto);
     gap: 0;
+    align-content: start;
     margin-bottom: 3rem;
     border: 1px solid var(--color-marron-dark);
 
@@ -78,8 +87,6 @@ onMounted(async () => {
       }
     }
 
-    
-
     :deep(.card-product__info) {
       border-top: 1px solid var(--color-marron-dark);
     }
@@ -91,6 +98,19 @@ onMounted(async () => {
 
     :deep(.card-product__price-wrapper) {
       padding: var(--padding-sm) var(--padding-xs);
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: none;
+
+      :deep(.card-product .card-product__image-wrapper) {
+        aspect-ratio: 3 / 4;
+      }
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
     }
   }
 
@@ -122,6 +142,18 @@ onMounted(async () => {
   &__item--6 {
     grid-column: 1;
     grid-row: 3;
+  }
+
+  @media (max-width: 768px) {
+    &__item--1,
+    &__item--2,
+    &__item--3,
+    &__item--4,
+    &__item--5,
+    &__item--6 {
+      grid-column: auto;
+      grid-row: auto;
+    }
   }
   
   &__button {
