@@ -3,21 +3,14 @@
 
     <!-- Overlay mobile -->
     <Transition name="overlay">
-      <div
-        v-if="mobileOpen"
-        class="sidebar-overlay"
-        @click="mobileOpen = false"
-      />
+      <div v-if="mobileOpen" class="sidebar-overlay" @click="mobileOpen = false" />
     </Transition>
 
     <!-- Sidebar -->
-    <aside
-      class="sidebar"
-      :class="{
-        'desktop-collapsed': desktopCollapsed,
-        'mobile-open': mobileOpen
-      }"
-    >
+    <aside class="sidebar" :class="{
+      'desktop-collapsed': desktopCollapsed,
+      'mobile-open': mobileOpen
+    }">
       <div class="sidebar-header">
         <div class="sidebar-brand">
           <span class="brand-icon">W</span>
@@ -30,30 +23,17 @@
       </div>
 
       <nav class="sidebar-nav">
-        <RouterLink
-          :to="{ name: 'admin-dashboard' }"
-          class="nav-item"
-          active-class="active"
-          @click="mobileOpen = false"
-        >
+        <RouterLink :to="{ name: 'admin-dashboard' }" class="nav-item" active-class="active"
+          @click="mobileOpen = false">
           <LayoutDashboard :size="20" />
           <span class="nav-label">Tableau de bord</span>
         </RouterLink>
-        <RouterLink
-          :to="{ name: 'admin-products' }"
-          class="nav-item"
-          active-class="active"
-          @click="mobileOpen = false"
-        >
+        <RouterLink :to="{ name: 'admin-products' }" class="nav-item" active-class="active" @click="mobileOpen = false">
           <Package :size="20" />
           <span class="nav-label">Produits</span>
         </RouterLink>
-        <RouterLink
-          :to="{ name: 'admin-categories' }"
-          class="nav-item"
-          active-class="active"
-          @click="mobileOpen = false"
-        >
+        <RouterLink :to="{ name: 'admin-categories' }" class="nav-item" active-class="active"
+          @click="mobileOpen = false">
           <Tag :size="20" />
           <span class="nav-label">Catégories</span>
         </RouterLink>
@@ -75,19 +55,6 @@
 
     <!-- Main content -->
     <div class="main-wrapper">
-      <header class="topbar">
-        <button class="mobile-menu-btn" @click="mobileOpen = !mobileOpen">
-          <Menu v-if="!mobileOpen" :size="20" />
-          <X v-else :size="20" />
-        </button>
-        <div class="topbar-right">
-          <RouterLink to="/" target="_blank" class="view-site-link">
-            <ExternalLink :size="16" />
-            Voir le site
-          </RouterLink>
-        </div>
-      </header>
-
       <main class="main-content">
         <RouterView />
       </main>
@@ -97,7 +64,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAdminStore } from '@/stores/admin'
 import {
   LayoutDashboard, Package, Tag, LogOut,
@@ -105,6 +72,7 @@ import {
 } from 'lucide-vue-next'
 
 const router = useRouter()
+const route = useRoute()
 const adminStore = useAdminStore()
 
 const desktopCollapsed = ref(false)
@@ -113,6 +81,17 @@ const mobileOpen = ref(false)
 const userInitials = computed(() => {
   const name = adminStore.user?.name || 'A'
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+})
+
+const currentProductLink = computed(() => {
+  if (route.name === 'admin-product-edit' && route.params.id) {
+    return { name: 'product', params: { id: route.params.id } }
+  }
+  return '/'
+})
+
+const currentProductLabel = computed(() => {
+  return (route.name === 'admin-product-edit' && route.params.id) ? 'Voir le produit' : 'Voir le site'
 })
 
 async function handleLogout() {
@@ -143,6 +122,7 @@ async function handleLogout() {
 .overlay-leave-active {
   transition: opacity 0.28s ease;
 }
+
 .overlay-enter-from,
 .overlay-leave-to {
   opacity: 0;
@@ -337,19 +317,6 @@ async function handleLogout() {
   display: flex;
   flex-direction: column;
   min-width: 0;
-}
-
-.topbar {
-  background: white;
-  padding: 0 1.5rem;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--color-sable);
-  position: sticky;
-  top: 0;
-  z-index: 10;
 }
 
 .mobile-menu-btn {

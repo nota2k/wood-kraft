@@ -9,13 +9,20 @@
         <h1 class="page-title">{{ isEditing ? 'Modifier le produit' : 'Nouveau produit' }}</h1>
       </div>
       <div class="header-actions">
+        <a v-if="isEditing" :href="'/product/' + $route.params.id" target="_blank" class="btn-secondary btn-icon">
+          <ExternalLink :size="16" />
+          Voir le produit
+        </a>
         <button class="btn-secondary" @click="$router.push({ name: 'admin-products' })">
           Annuler
         </button>
-        <button class="btn-primary" :disabled="saving" @click="handleSave">
+        <button class="btn-primary" :class="{ 'btn-success': saved }" :disabled="saving || saved" @click="handleSave">
           <span v-if="saving" class="spinner-sm"></span>
+          <Check v-else-if="saved" :size="16" />
           <Save v-else :size="16" />
-          {{ isEditing ? 'Enregistrer' : 'Créer' }}
+
+          <span v-if="saved">Enregistré</span>
+          <span v-else>{{ isEditing ? 'Enregistrer' : 'Créer' }}</span>
         </button>
       </div>
     </div>
@@ -55,11 +62,7 @@
 
           <div class="form-group">
             <label>Description</label>
-            <textarea
-              v-model="form.description"
-              rows="5"
-              placeholder="Description du produit..."
-            ></textarea>
+            <textarea v-model="form.description" rows="5" placeholder="Description du produit..."></textarea>
           </div>
         </div>
 
@@ -109,11 +112,7 @@
             Aucune variation. Ajoutez des options (couleur, finition…)
           </div>
 
-          <div
-            v-for="(variation, index) in form.variations"
-            :key="index"
-            class="variation-row"
-          >
+          <div v-for="(variation, index) in form.variations" :key="index" class="variation-row">
             <div class="form-group flex-1">
               <label>Type</label>
               <input v-model="variation.type" type="text" placeholder="ex. couleur" />
@@ -139,16 +138,8 @@
         <div class="card">
           <h2 class="card-title">Catégories</h2>
           <div class="categories-list">
-            <label
-              v-for="cat in categories"
-              :key="cat.id"
-              class="checkbox-item"
-            >
-              <input
-                type="checkbox"
-                :value="cat.id"
-                v-model="form.category_ids"
-              />
+            <label v-for="cat in categories" :key="cat.id" class="checkbox-item">
+              <input type="checkbox" :value="cat.id" v-model="form.category_ids" />
               <span>{{ cat.name }}</span>
             </label>
             <p v-if="categories.length === 0" class="muted-sm">Aucune catégorie disponible</p>
@@ -161,27 +152,15 @@
 
           <!-- Existing images (edit mode) -->
           <div v-if="existingImages.length > 0" class="existing-images">
-            <div
-              v-for="img in existingImages"
-              :key="img.id"
-              class="existing-img"
-            >
+            <div v-for="img in existingImages" :key="img.id" class="existing-img">
               <img :src="img.image_path" :alt="form.title" />
               <div class="img-overlay">
-                <button
-                  class="img-default-btn"
-                  :class="{ active: img.is_default }"
-                  @click="setDefaultImage(img.id)"
-                  title="Image principale"
-                >
-                  <Star :size="14" />
+                <button class="img-default-btn" :class="{ active: img.is_default }" @click="setDefaultImage(img.id)"
+                  title="Image principale">
+                  <Bookmark :size="14" />
                 </button>
-                <button
-                  class="img-delete-btn"
-                  @click="markImageForDeletion(img.id)"
-                  title="Supprimer"
-                >
-                  <X :size="14" />
+                <button class="img-delete-btn" @click="markImageForDeletion(img.id)" title="Supprimer">
+                  <Trash :size="14" />
                 </button>
               </div>
               <span v-if="img.markedForDeletion" class="img-delete-mark">Supprimée</span>
@@ -189,34 +168,17 @@
           </div>
 
           <!-- Upload new images -->
-          <div
-            class="upload-zone"
-            :class="{ dragging: isDragging }"
-            @dragover.prevent="isDragging = true"
-            @dragleave.prevent="isDragging = false"
-            @drop.prevent="onDrop"
-            @click="$refs.fileInput.click()"
-          >
+          <div class="upload-zone" :class="{ dragging: isDragging }" @dragover.prevent="isDragging = true"
+            @dragleave.prevent="isDragging = false" @drop.prevent="onDrop" @click="$refs.fileInput.click()">
             <Upload :size="24" />
             <p>Glissez des images ici ou cliquez pour sélectionner</p>
             <span class="upload-hint">PNG, JPG, WEBP · Max 5 MB</span>
-            <input
-              ref="fileInput"
-              type="file"
-              accept="image/*"
-              multiple
-              style="display:none"
-              @change="onFileSelect"
-            />
+            <input ref="fileInput" type="file" accept="image/*" multiple style="display:none" @change="onFileSelect" />
           </div>
 
           <!-- Preview new images -->
           <div v-if="newImagePreviews.length > 0" class="new-images-preview">
-            <div
-              v-for="(preview, i) in newImagePreviews"
-              :key="i"
-              class="preview-img"
-            >
+            <div v-for="(preview, i) in newImagePreviews" :key="i" class="preview-img">
               <img :src="preview.url" :alt="'Image ' + (i + 1)" />
               <button class="img-delete-btn" @click="removeNewImage(i)">
                 <X :size="14" />
@@ -243,7 +205,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '@/services/api'
-import { ArrowLeft, Save, Plus, X, Upload, Star } from 'lucide-vue-next'
+import { ArrowLeft, Save, Plus, X, Upload, Bookmark, ExternalLink, Check, Trash } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -251,6 +213,7 @@ const router = useRouter()
 const isEditing = computed(() => !!route.params.id)
 const loadingProduct = ref(isEditing.value)
 const saving = ref(false)
+const saved = ref(false)
 const globalError = ref('')
 const successMsg = ref('')
 const errors = ref({})
@@ -399,12 +362,19 @@ async function handleSave() {
       await api.updateProduct(route.params.id, formData)
       successMsg.value = 'Produit mis à jour avec succès.'
       await loadProduct()
+
+      saved.value = true
+      setTimeout(() => saved.value = false, 1000)
     } else {
       const response = await api.createProduct(formData)
       successMsg.value = 'Produit créé avec succès.'
+
+      saved.value = true
       const newId = response?.data?.id || response?.id
       if (newId) {
         setTimeout(() => router.push({ name: 'admin-product-edit', params: { id: newId } }), 1000)
+      } else {
+        setTimeout(() => saved.value = false, 1000)
       }
     }
   } catch (e) {
@@ -467,8 +437,13 @@ function buildFormData() {
 </script>
 
 <style scoped>
-.product-form-page { max-width: 1100px; }
-.mt-3 { margin-top: 1rem; }
+.product-form-page {
+  max-width: 1100px;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
 
 .page-header {
   display: flex;
@@ -495,7 +470,9 @@ function buildFormData() {
   transition: color 0.2s;
 }
 
-.back-link:hover { color: var(--color-marron); }
+.back-link:hover {
+  color: var(--color-marron);
+}
 
 .page-title {
   font-size: 1.75rem;
@@ -510,6 +487,10 @@ function buildFormData() {
 }
 
 .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   padding: 0.75rem 1.25rem;
   background: white;
   border: 1.5px solid var(--color-sable);
@@ -517,9 +498,13 @@ function buildFormData() {
   font-size: 0.9rem;
   cursor: pointer;
   transition: border-color 0.2s;
+  text-decoration: none;
+  color: var(--color-dark);
 }
 
-.btn-secondary:hover { border-color: var(--color-marron); }
+.btn-secondary:hover {
+  border-color: var(--color-marron);
+}
 
 .btn-primary {
   display: flex;
@@ -538,8 +523,21 @@ function buildFormData() {
   justify-content: center;
 }
 
-.btn-primary:hover:not(:disabled) { background: var(--color-marron-dark); }
-.btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-marron-dark);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-primary.btn-success {
+  background: #27ae60 !important;
+  border-color: #27ae60 !important;
+  color: white;
+  opacity: 1 !important;
+}
 
 .loading-state {
   display: flex;
@@ -559,13 +557,17 @@ function buildFormData() {
 .spinner-sm {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* Layout */
 .form-layout {
@@ -576,7 +578,9 @@ function buildFormData() {
 }
 
 @media (max-width: 900px) {
-  .form-layout { grid-template-columns: 1fr; }
+  .form-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Cards */
@@ -588,7 +592,9 @@ function buildFormData() {
   margin-bottom: 1.5rem;
 }
 
-.card:last-child { margin-bottom: 0; }
+.card:last-child {
+  margin-bottom: 0;
+}
 
 .card-header {
   display: flex;
@@ -604,7 +610,9 @@ function buildFormData() {
   margin: 0 0 1.25rem;
 }
 
-.card-header .card-title { margin: 0; }
+.card-header .card-title {
+  margin: 0;
+}
 
 /* Forms */
 .form-group {
@@ -614,7 +622,9 @@ function buildFormData() {
   margin-bottom: 1rem;
 }
 
-.form-group:last-child { margin-bottom: 0; }
+.form-group:last-child {
+  margin-bottom: 0;
+}
 
 .form-group label {
   font-size: 0.85rem;
@@ -622,7 +632,9 @@ function buildFormData() {
   color: var(--color-dark);
 }
 
-.required { color: #c62828; }
+.required {
+  color: #c62828;
+}
 
 .form-group input,
 .form-group textarea,
@@ -677,8 +689,13 @@ function buildFormData() {
   margin-bottom: 0.75rem;
 }
 
-.variation-row .form-group { margin-bottom: 0; }
-.flex-1 { flex: 1; }
+.variation-row .form-group {
+  margin-bottom: 0;
+}
+
+.flex-1 {
+  flex: 1;
+}
 
 .btn-add-variation {
   display: flex;
@@ -693,7 +710,9 @@ function buildFormData() {
   transition: border-color 0.2s;
 }
 
-.btn-add-variation:hover { border-color: var(--color-marron); }
+.btn-add-variation:hover {
+  border-color: var(--color-marron);
+}
 
 .btn-remove-variation {
   width: 32px;
@@ -763,7 +782,7 @@ function buildFormData() {
 .img-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -772,27 +791,37 @@ function buildFormData() {
   transition: opacity 0.2s;
 }
 
-.existing-img:hover .img-overlay { opacity: 1; }
+.existing-img:hover .img-overlay {
+  opacity: 1;
+}
 
 .img-default-btn,
 .img-delete-btn {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.img-default-btn:hover,
+.img-delete-btn:hover {
+  transform: scale(1.1);
 }
 
 .img-default-btn {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.3);
   color: white;
 }
 
 .img-default-btn.active {
-  background: #f39c12;
+  background: #27ae60;
   color: white;
 }
 
@@ -801,10 +830,14 @@ function buildFormData() {
   color: white;
 }
 
+.img-delete-btn:hover {
+  background: #c62828;
+}
+
 .img-delete-mark {
   position: absolute;
   inset: 0;
-  background: rgba(198,40,40,0.6);
+  background: rgba(198, 40, 40, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -866,7 +899,9 @@ function buildFormData() {
   transition: opacity 0.2s;
 }
 
-.preview-img:hover .img-delete-btn { opacity: 1; }
+.preview-img:hover .img-delete-btn {
+  opacity: 1;
+}
 
 /* Alerts */
 .global-error {
