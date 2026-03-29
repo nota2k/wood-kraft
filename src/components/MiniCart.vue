@@ -32,7 +32,7 @@ const handleClick = () => {
     border: none;
     cursor: pointer;
     color: var(--color-marron);
-    padding: var(--padding-xs);
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -65,4 +65,3 @@ const handleClick = () => {
     }
 }
 </style>
-

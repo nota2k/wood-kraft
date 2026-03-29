@@ -3,7 +3,7 @@ import { ref, watch, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import MiniCart from './MiniCart.vue'
 import CartModal from './CartModal.vue'
 import { animate, svg } from 'animejs'
-import { User } from 'lucide-vue-next'
+import { User, BriefcaseBusiness } from 'lucide-vue-next'
 
 defineOptions({
   name: 'SiteHeader'
@@ -13,13 +13,28 @@ const isVisible = ref(true)
 const isCartOpen = ref(false)
 const isNavOpen = ref(false)
 const user = ref(null)
+const isAdmin = ref(false)
 
 const checkUser = () => {
-  user.value = JSON.parse(localStorage.getItem('customer_user') || 'null')
+  const customer = JSON.parse(localStorage.getItem('customer_user') || 'null')
+  const admin = JSON.parse(localStorage.getItem('admin_user') || 'null')
+  
+  if (customer) {
+    user.value = customer
+    isAdmin.value = false
+  } else if (admin) {
+    user.value = admin
+    isAdmin.value = true
+  } else {
+    user.value = null
+    isAdmin.value = false
+  }
 }
 
 const accountRoute = computed(() => {
-  return user.value ? { name: 'account-dashboard' } : { name: 'login' }
+  if (isAdmin.value) return { name: 'admin-dashboard' }
+  if (user.value) return { name: 'account-dashboard' }
+  return { name: 'login' }
 })
 
 let lastScrollY = 0
@@ -183,6 +198,9 @@ watch(isNavOpen, async (newValue) => {
             <path ref="path3Ref" :d="closedPaths[2]" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           </svg>
         </button>
+        <RouterLink v-if="isAdmin" :to="{ name: 'admin-dashboard' }" class="admin-link" aria-label="Backoffice">
+          <BriefcaseBusiness :size="24" />
+        </RouterLink>
         <RouterLink :to="accountRoute" class="account-link" aria-label="Compte">
           <User :size="24" />
         </RouterLink>
@@ -313,6 +331,7 @@ watch(isNavOpen, async (newValue) => {
     color: var(--color-marron-dark);
   }
 
+  .admin-link,
   .account-link {
     display: flex;
     align-items: center;
