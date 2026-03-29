@@ -69,12 +69,28 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label>Matériaux</label>
-              <input v-model="form.materials" type="text" placeholder="ex. Chêne massif, métal" />
+              <label>Matériau</label>
+              <select v-model="form.material_id">
+                <option value="">Sélectionner un matériau</option>
+                <option v-for="mat in materials" :key="mat.id" :value="mat.id">
+                  {{ mat.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row mt-3">
+            <div class="form-group">
+              <label>Largeur (cm)</label>
+              <input v-model="form.width" type="number" step="0.1" placeholder="ex. 60" />
             </div>
             <div class="form-group">
-              <label>Dimensions</label>
-              <input v-model="form.dimensions" type="text" placeholder="ex. L120 x l60 x H45 cm" />
+              <label>Longueur (cm)</label>
+              <input v-model="form.length" type="number" step="0.1" placeholder="ex. 120" />
+            </div>
+            <div class="form-group">
+              <label>Profondeur (cm)</label>
+              <input v-model="form.depth" type="number" step="0.1" placeholder="ex. 40" />
             </div>
           </div>
         </div>
@@ -240,6 +256,7 @@ const successMsg = ref('')
 const errors = ref({})
 
 const categories = ref([])
+const materials = ref([])
 const existingImages = ref([])
 const newImageFiles = ref([])
 const newImagePreviews = ref([])
@@ -252,18 +269,32 @@ const form = ref({
   reference: '',
   quantity: '',
   description: '',
-  materials: '',
-  dimensions: '',
+  material_id: '',
+  width: '',
+  length: '',
+  depth: '',
   category_ids: [],
   variations: [],
 })
 
 onMounted(async () => {
-  await loadCategories()
+  await Promise.all([
+    loadCategories(),
+    loadMaterials()
+  ])
   if (isEditing.value) {
     await loadProduct()
   }
 })
+
+async function loadMaterials() {
+  try {
+    const data = await api.getMaterials()
+    materials.value = data.data || data || []
+  } catch {
+    materials.value = []
+  }
+}
 
 async function loadCategories() {
   try {
@@ -284,8 +315,10 @@ async function loadProduct() {
       reference: product.reference || '',
       quantity: product.quantity ?? '',
       description: product.description || '',
-      materials: product.materials || '',
-      dimensions: product.dimensions || '',
+      material_id: product.material_id || '',
+      width: product.width || '',
+      length: product.length || '',
+      depth: product.depth || '',
       category_ids: (product.categories || []).map(c => c.id),
       variations: (product.variations || []).map(v => ({
         id: v.id,
@@ -398,8 +431,10 @@ function buildFormData() {
   if (form.value.reference) fd.append('reference', form.value.reference)
   if (form.value.quantity !== '') fd.append('quantity', form.value.quantity)
   if (form.value.description) fd.append('description', form.value.description)
-  if (form.value.materials) fd.append('materials', form.value.materials)
-  if (form.value.dimensions) fd.append('dimensions', form.value.dimensions)
+  if (form.value.material_id) fd.append('material_id', form.value.material_id)
+  if (form.value.width !== '') fd.append('width', form.value.width)
+  if (form.value.length !== '') fd.append('length', form.value.length)
+  if (form.value.depth !== '') fd.append('depth', form.value.depth)
 
   form.value.category_ids.forEach((id, i) => {
     fd.append(`category_ids[${i}]`, id)
@@ -433,6 +468,7 @@ function buildFormData() {
 
 <style scoped>
 .product-form-page { max-width: 1100px; }
+.mt-3 { margin-top: 1rem; }
 
 .page-header {
   display: flex;

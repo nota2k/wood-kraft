@@ -33,7 +33,7 @@ const suggestedProducts = computed(() => {
         // Produits de la même catégorie (utiliser le slug)
         categoryProducts = productsStore.getProductsByCategory(props.category)
             .filter(product => product.id !== props.currentProductId)
-        
+
         // Si on n'a pas assez de produits dans la catégorie, compléter avec d'autres produits
         if (categoryProducts.length < props.limit) {
             otherProducts = productsStore.getAllProducts
@@ -52,7 +52,7 @@ const suggestedProducts = computed(() => {
 
     // Combiner et limiter au nombre de produits demandé
     const filtered = [...categoryProducts, ...otherProducts].slice(0, props.limit)
-    
+
     return filtered
 })
 
@@ -61,7 +61,7 @@ onMounted(async () => {
     if (productsStore.products.length === 0) {
         await productsStore.fetchProducts({ per_page: 20 })
     }
-    
+
     // Initialiser le slider Swiper
     if (sliderRef.value && suggestedProducts.value.length > 0) {
         new Swiper(sliderRef.value, {
@@ -98,17 +98,23 @@ onMounted(async () => {
         <div class="product-suggestions__container">
             <div class="swiper product-suggestions__slider" ref="sliderRef">
                 <div class="swiper-wrapper">
-                    <div 
-                        v-for="product in suggestedProducts" 
-                        :key="product.id"
-                        class="swiper-slide"
-                    >
+                    <div v-for="product in suggestedProducts" :key="product.id" class="swiper-slide">
                         <CardProduct :product="product" />
                     </div>
                 </div>
             </div>
-            <div class="product-suggestions__button-prev"></div>
-            <div class="product-suggestions__button-next"></div>
+            <div class="product-suggestions__button-prev"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="lucide lucide-arrow-left-icon lucide-arrow-left">
+                    <path d="m12 19-7-7 7-7" />
+                    <path d="M19 12H5" />
+                </svg></div>
+            <div class="product-suggestions__button-next"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="lucide lucide-arrow-right-icon lucide-arrow-right">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                </svg></div>
         </div>
     </section>
 </template>
@@ -154,22 +160,25 @@ onMounted(async () => {
         border-radius: 50%;
         border: var(--border);
         color: var(--color-marron);
+        background: var(--color-sable);
         cursor: pointer;
         z-index: 10;
         display: flex;
         align-items: center;
         justify-content: center;
         transition: background-color var(--transition);
-        
+
         &::after {
             font-size: 18px;
             font-weight: bold;
         }
-        
+
         &:hover {
-            background-color: var(--color-sable);
+            background-color: var(--color-marron);
+            color: var(--color-sable);
+            border-color: var(--color-sable);
         }
-        
+
         &.swiper-button-disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -177,7 +186,7 @@ onMounted(async () => {
     }
 
     &__button-prev {
-        left: -60px;
+        left: 20px;
 
         @media (max-width: 768px) {
             left: 0;
@@ -185,7 +194,7 @@ onMounted(async () => {
     }
 
     &__button-next {
-        right: -60px;
+        right: 20px;
 
         @media (max-width: 768px) {
             right: 0;
@@ -205,4 +214,3 @@ onMounted(async () => {
     }
 }
 </style>
-

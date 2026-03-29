@@ -21,7 +21,7 @@ const product = computed(() => {
 
 onMounted(async () => {
   const id = route.params.id
-  
+
   // Charger le produit depuis l'API s'il n'est pas déjà en cache
   if (!product.value) {
     try {
@@ -37,7 +37,7 @@ onMounted(async () => {
   } else {
     loading.value = false
   }
-  
+
   if (product.value && product.value.colorVariations && product.value.colorVariations.length > 0) {
     selectedColor.value = product.value.colorVariations[0]
   }
@@ -70,7 +70,7 @@ const getImagePath = (image) => {
 
 const breadcrumbItems = computed(() => {
   if (!product.value) return []
-  
+
   return [
     { label: 'Produits', to: '/products' },
     { label: product.value.title }
@@ -79,9 +79,27 @@ const breadcrumbItems = computed(() => {
 
 const handleAddToCart = () => {
   if (!product.value) return
-  
+
   cartStore.addItem(product.value.id, selectedColor.value, 1)
 }
+
+const formattedMaterial = computed(() => {
+  if (!product.value) return ''
+  return product.value.material?.name || product.value.materials || 'Non spécifié'
+})
+
+const formattedDimensions = computed(() => {
+  if (!product.value) return ''
+  const { width, length, depth } = product.value
+  if (!width && !length && !depth) return product.value.dimensions || 'Non spécifié'
+
+  let parts = []
+  if (width) parts.push(`L${Math.round(width)}mm x`)
+  if (length) parts.push(` l${Math.round(length)}mm x`)
+  if (depth) parts.push(` P${Math.round(depth)}mm`)
+
+  return parts.join('')
+})
 </script>
 
 <template>
@@ -91,15 +109,8 @@ const handleAddToCart = () => {
     <div v-else-if="product" class="product-view__container">
       <!-- Images produit -->
       <div class="product-view__gallery" v-if="product">
-        <div 
-          v-for="(image, index) in product.images" 
-          :key="image.id || index"
-          class="product-view__image-item"
-        >
-          <img 
-            :src="getImagePath(image)" 
-            :alt="`${product.title} - vue ${index + 1}`" 
-          />
+        <div v-for="(image, index) in product.images" :key="image.id || index" class="product-view__image-item">
+          <img :src="getImagePath(image)" :alt="`${product.title} - vue ${index + 1}`" />
         </div>
       </div>
 
@@ -107,7 +118,7 @@ const handleAddToCart = () => {
       <div class="product-view__info" v-if="product">
         <h1 class="product-view__title">{{ product.title }}</h1>
         <p class="product-view__price">{{ product.price }} €</p>
-        
+
         <div class="product-view__description">
           <p>{{ product.description }}</p>
         </div>
@@ -116,15 +127,11 @@ const handleAddToCart = () => {
         <div v-if="product.colorVariations && product.colorVariations.length > 0" class="product-view__colors">
           <label class="product-view__colors-label">Couleur :</label>
           <div class="product-view__colors-list">
-            <button
-              v-for="colorVar in product.colorVariations"
-              :key="colorVar.id || colorVar.name"
+            <button v-for="colorVar in product.colorVariations" :key="colorVar.id || colorVar.name"
               @click="handleColorSelect(colorVar)"
               :class="['product-view__color-btn', { 'product-view__color-btn--active': selectedColor?.value === colorVar.value }]"
-              :style="{ backgroundColor: colorVar.color }"
-              :title="colorVar.name"
-              :disabled="!colorVar.available"
-            ></button>
+              :style="{ backgroundColor: colorVar.color }" :title="colorVar.name"
+              :disabled="!colorVar.available"></button>
           </div>
           <p v-if="selectedColor" class="product-view__color-name">{{ selectedColor.name }}</p>
         </div>
@@ -136,11 +143,11 @@ const handleAddToCart = () => {
           </div>
           <div class="product-view__detail-item">
             <span class="product-view__detail-label">Matériau</span>
-            <span class="product-view__detail-value">{{ product.materials }}</span>
+            <span class="product-view__detail-value">{{ formattedMaterial }}</span>
           </div>
           <div class="product-view__detail-item">
             <span class="product-view__detail-label">Dimensions</span>
-            <span class="product-view__detail-value">{{ product.dimensions }}</span>
+            <span class="product-view__detail-value">{{ formattedDimensions }}</span>
           </div>
         </div>
 
@@ -151,14 +158,10 @@ const handleAddToCart = () => {
       </div>
     </div>
     <div v-else class="product-view__error">Produit non trouvé</div>
-    
+
     <!-- Produits suggérés -->
-    <ProductSuggestions 
-      v-if="product && !loading"
-      :current-product-id="product.id"
-      :category="product.categories?.[0]?.slug"
-      :limit="4"
-    />
+    <ProductSuggestions v-if="product && !loading" :current-product-id="product.id"
+      :category="product.categories?.[0]?.slug" :limit="4" />
   </main>
 </template>
 
@@ -168,7 +171,7 @@ const handleAddToCart = () => {
   background-color: var(--color-beige);
   min-height: calc(100vh - 80px);
   max-width: 100%;
-  
+
   &__container {
     max-width: 100%;
     margin: 0;
@@ -176,34 +179,34 @@ const handleAddToCart = () => {
     grid-template-columns: 1fr 1fr;
     gap: var(--padding-md);
     position: relative;
-    
+
     @media (max-width: 1024px) {
       grid-template-columns: 1fr;
     }
   }
-  
+
   &__gallery {
     display: flex;
     flex-direction: column;
   }
-  
+
   &__image-item {
     width: 100%;
     aspect-ratio: 1;
     overflow: hidden;
     outline: var(--border);
     background-color: #f0f0f0;
-    
+
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
   }
-  
+
   &__info {
     display: flex;
-    padding: var(--padding-xs); 
+    padding: var(--padding-xs);
     flex-direction: column;
     position: sticky;
     top: 90px;
@@ -211,16 +214,16 @@ const handleAddToCart = () => {
     gap: var(--padding-xs);
     height: fit-content;
   }
-  
+
   &__title {
     font-family: "Lovan", serif;
-    font-size:clamp(4rem, 6.5vw, 7.4rem);
+    font-size: clamp(4rem, 6.5vw, 7.4rem);
     color: var(--color-marron);
     font-weight: 400;
     margin: 0;
     line-height: 0.9;
   }
-  
+
   &__price {
     font-family: 'Regarn', serif;
     font-size: var(--font-lg);
@@ -231,10 +234,10 @@ const handleAddToCart = () => {
     border-top: var(--border);
     padding-top: var(--padding-sm);
   }
-  
+
   &__description {
     padding: var(--padding-xs) 0;
-    
+
     p {
       font-size: clamp(1.2rem, 1.8vw, 1.4rem);
       color: var(--color-marron);
@@ -243,7 +246,7 @@ const handleAddToCart = () => {
       margin: 0;
     }
   }
-  
+
   &__details {
     display: flex;
     flex-direction: column;
@@ -254,37 +257,37 @@ const handleAddToCart = () => {
     padding: var(--padding-sm);
     margin-bottom: var(--padding-sm);
   }
-  
+
   &__detail-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: var(--padding-xs) 0;
-    
+
     &:not(:last-child) {
       border-bottom: var(--border);
     }
   }
-  
+
   &__detail-label {
     font-size: var(--font-sm);
     color: var(--color-marron);
     font-weight: 500;
   }
-  
+
   &__detail-value {
     font-size: var(--font-sm);
     color: var(--color-marron);
     font-weight: 300;
   }
-  
+
   &__actions {
     display: flex;
     gap: var(--padding-xs);
     flex-wrap: wrap;
-    
+
   }
-  
+
   &__button {
     flex: 1;
     min-width: 200px;
@@ -298,39 +301,39 @@ const handleAddToCart = () => {
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: opacity var(--transition);
-    
+
     &:hover {
       opacity: 0.9;
     }
-    
+
     &--secondary {
       background-color: transparent;
       color: var(--color-marron);
-      
+
       &:hover {
         background-color: var(--color-sable);
       }
     }
   }
-  
+
   &__colors {
     display: flex;
     flex-direction: column;
     gap: var(--padding-xs);
     padding: var(--padding-sm) 0;
   }
-  
+
   &__colors-label {
     font-size: var(--font-sm);
     font-weight: 500;
   }
-  
+
   &__colors-list {
     display: flex;
     gap: var(--padding-sm);
     flex-wrap: wrap;
   }
-  
+
   &__color-btn {
     width: auto;
     height: 40px;
@@ -340,29 +343,29 @@ const handleAddToCart = () => {
     cursor: pointer;
     transition: transform var(--transition);
     outline: 2px solid var(--color-marron);
-    
+
     &:hover:not(:disabled) {
       transform: scale(1);
     }
-    
+
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
-    
+
     &--active {
       border-width: 3px;
       transform: scale(1);
     }
   }
-  
+
   &__color-name {
     font-size: var(--font-sm);
     color: var(--color-marron);
     font-weight: 300;
     margin: 0;
   }
-  
+
   &__loading,
   &__error {
     padding: var(--padding-lg);

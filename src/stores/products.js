@@ -18,7 +18,11 @@ function transformProduct(product) {
     description: product.description,
     reference: product.reference,
     materials: product.materials,
+    material: product.material,
     dimensions: product.dimensions,
+    width: product.width,
+    length: product.length,
+    depth: product.depth,
     quantity: product.quantity,
     // Images : garder la structure complète de l'API
     images: sortedImages,

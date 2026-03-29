@@ -1,5 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8888/api/v1'
-const APP_URL = import.meta.env.VITE_APP_URL || 'http://127.0.0.1:8888'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'
+const APP_URL = import.meta.env.VITE_APP_URL || 'http://localhost:8000'
 
 /**
  * Service API pour communiquer avec le backend Laravel
@@ -155,13 +155,13 @@ class ApiService {
   }
 
   async createProduct(formData) {
-    return this.requestForm('/products', formData, 'POST')
+    return this.requestForm('/admin/products', formData, 'POST')
   }
 
   async updateProduct(id, formData) {
     // Laravel nécessite _method pour le PUT avec FormData
     formData.append('_method', 'PUT')
-    return this.requestForm(`/products/${id}`, formData, 'POST')
+    return this.requestForm(`/admin/products/${id}`, formData, 'POST')
   }
 
   async deleteProduct(id) {
@@ -190,16 +190,15 @@ class ApiService {
     return this.delete(`/categories/${id}`)
   }
 
+  // ===== MATERIALS =====
+  async getMaterials() {
+    return this.get('/materials')
+  }
+
   // ===== ADMIN STATS =====
 
   async getStats() {
     return this.get('/admin/stats')
-  }
-
-  // ===== AUTH =====
-
-  async login(credentials) {
-    return this.post('/auth/login', credentials)
   }
 }
 
