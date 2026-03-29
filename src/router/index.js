@@ -12,9 +12,6 @@ const router = createRouter({
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },
     {
@@ -32,15 +29,69 @@ const router = createRouter({
       name: 'cart',
       component: () => import('../views/CartView.vue'),
     },
+
+    // ===== ADMIN =====
+    {
+      path: '/admin/login',
+      name: 'admin-login',
+      component: () => import('../views/admin/AdminLoginView.vue'),
+      meta: { guestOnly: true },
+    },
+    {
+      path: '/admin',
+      component: () => import('../views/admin/AdminLayout.vue'),
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: '',
+          redirect: { name: 'admin-dashboard' },
+        },
+        {
+          path: 'dashboard',
+          name: 'admin-dashboard',
+          component: () => import('../views/admin/AdminDashboardView.vue'),
+        },
+        {
+          path: 'products',
+          name: 'admin-products',
+          component: () => import('../views/admin/AdminProductsView.vue'),
+        },
+        {
+          path: 'products/create',
+          name: 'admin-product-create',
+          component: () => import('../views/admin/AdminProductFormView.vue'),
+        },
+        {
+          path: 'products/:id/edit',
+          name: 'admin-product-edit',
+          component: () => import('../views/admin/AdminProductFormView.vue'),
+        },
+        {
+          path: 'categories',
+          name: 'admin-categories',
+          component: () => import('../views/admin/AdminCategoriesView.vue'),
+        },
+      ],
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
-    // Si on a une position sauvegardée (retour arrière), l'utiliser
     if (savedPosition) {
       return savedPosition
     }
-    // Sinon, toujours aller en haut de la page instantanément
     return { top: 0 }
   },
+})
+
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = !!localStorage.getItem('admin_user')
+
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    next({ name: 'admin-login' })
+  } else if (to.meta.guestOnly && isLoggedIn) {
+    next({ name: 'admin-dashboard' })
+  } else {
+    next()
+  }
 })
 
 export default router
