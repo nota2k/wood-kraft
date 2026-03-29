@@ -37,6 +37,11 @@
           <Tag :size="20" />
           <span class="nav-label">Catégories</span>
         </RouterLink>
+        <RouterLink :to="{ name: 'admin-orders' }" class="nav-item" active-class="active"
+          @click="mobileOpen = false">
+          <ShoppingBag :size="20" />
+          <span class="nav-label">Commandes</span>
+        </RouterLink>
       </nav>
 
       <div class="sidebar-footer">
@@ -68,7 +73,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAdminStore } from '@/stores/admin'
 import {
   LayoutDashboard, Package, Tag, LogOut,
-  ChevronLeft, ChevronRight, Menu, X, ExternalLink
+  ChevronLeft, ChevronRight, Menu, X, ExternalLink, ShoppingBag
 } from 'lucide-vue-next'
 
 const router = useRouter()
