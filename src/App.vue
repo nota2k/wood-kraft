@@ -14,9 +14,12 @@ import { RouterView, useRoute } from 'vue-router'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import { initSmoothScroll, destroySmoothScroll, getLenis } from './composables/useSmoothScroll'
+import { useCartStore } from './stores/cart'
 
 onMounted(() => {
   initSmoothScroll()
+  const cartStore = useCartStore()
+  cartStore.loadCart()
 })
 
 onUnmounted(() => {

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import api from '@/services/api'
 
 export const useCartStore = defineStore('cart', {
     state: () => ({
@@ -11,7 +12,6 @@ export const useCartStore = defineStore('cart', {
         },
 
         totalPrice: (state) => {
-            // Cette fonction sera appelée avec le productsStore depuis les composants
             return (productsStore) => {
                 if (!productsStore) return 0
                 return state.items.reduce((total, item) => {
@@ -28,22 +28,48 @@ export const useCartStore = defineStore('cart', {
     },
 
     actions: {
+        async loadCart() {
+            const user = localStorage.getItem('customer_user')
+            if (user) {
+                try {
+                    const dbItems = await api.fetchCart()
+                    this.items = dbItems.map(item => ({
+                        productId: item.product_id,
+                        quantity: item.quantity,
+                        selectedColor: item.options // options contient la couleur
+                    }))
+                } catch (err) {
+                    console.error('Erreur chargement panier distant:', err)
+                }
+            }
+        },
+
+        async sync() {
+            const user = localStorage.getItem('customer_user')
+            if (user) {
+                try {
+                    await api.syncCart(this.items)
+                } catch (err) {
+                    console.error('Erreur synchronisation panier:', err)
+                }
+            }
+        },
+
         addItem(productId, selectedColor = null, quantity = 1) {
             const existingItemIndex = this.items.findIndex(
                 item => item.productId === productId && item.selectedColor?.name === selectedColor?.name
             )
 
             if (existingItemIndex !== -1) {
-                // Si l'article existe déjà avec la même couleur, augmenter la quantité
                 this.items[existingItemIndex].quantity += quantity
             } else {
-                // Sinon, ajouter un nouvel article
                 this.items.push({
                     productId: parseInt(productId),
                     quantity,
                     selectedColor
                 })
             }
+            this.sync()
         },
 
         removeItem(productId, selectedColor = null) {
@@ -53,6 +79,7 @@ export const useCartStore = defineStore('cart', {
             if (index !== -1) {
                 this.items.splice(index, 1)
             }
+            this.sync()
         },
 
         updateQuantity(productId, selectedColor = null, quantity) {
@@ -66,11 +93,12 @@ export const useCartStore = defineStore('cart', {
                     item.quantity = quantity
                 }
             }
+            this.sync()
         },
 
         clearCart() {
             this.items = []
+            this.sync()
         }
     }
 })
-

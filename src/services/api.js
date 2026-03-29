@@ -164,8 +164,17 @@ class ApiService {
     return this.post('/auth/logout')
   }
 
-  async getMe() {
-    return this.get('/auth/user')
+  // ===== CART =====
+  async syncCart(items) {
+    return this.post('/customer/cart/sync', { items })
+  }
+
+  async fetchCart() {
+    return this.get('/customer/cart')
+  }
+
+  async emptyCart() {
+    return this.delete('/customer/cart')
   }
 
   // ===== PRODUCTS =====

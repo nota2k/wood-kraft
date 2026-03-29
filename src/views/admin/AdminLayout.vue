@@ -101,6 +101,7 @@ const currentProductLabel = computed(() => {
 
 async function handleLogout() {
   await adminStore.logout()
+  window.dispatchEvent(new Event('auth-changed'))
   router.push({ name: 'admin-login' })
 }
 </script>

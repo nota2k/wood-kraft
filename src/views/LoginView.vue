@@ -55,6 +55,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { useCartStore } from '@/stores/cart'
 import api from '@/services/api'
 import { ArrowLeft } from 'lucide-vue-next'
 
@@ -79,8 +80,12 @@ async function handleSubmit() {
       ? await api.register(form)
       : await api.login(form)
     
-    // On stocke l'utilisateur (simplifié, on utilise les cookies de session via Sanctum)
+    // On stocke l'utilisateur
     localStorage.setItem('customer_user', JSON.stringify(response.user))
+    
+    // Charger le panier persistant
+    const cartStore = useCartStore()
+    await cartStore.loadCart()
     
     // Redirection vers le compte
     window.dispatchEvent(new Event('auth-changed'))

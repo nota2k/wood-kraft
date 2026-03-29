@@ -123,36 +123,38 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = !!localStorage.getItem('admin_user')
+  const adminUser = localStorage.getItem('admin_user')
+  const customerUser = localStorage.getItem('customer_user')
+  
+  const isAdminLoggedIn = !!adminUser
+  const isCustomerLoggedIn = !!customerUser
 
-  if (to.meta.requiresAuth && !isLoggedIn) {
-    next({ name: 'admin-login' })
-  } else if (to.meta.guestOnly && isLoggedIn) {
-    next({ name: 'admin-dashboard' })
-  } else {
-    next()
-  }
-})
+  // 1. Protection des routes ADMIN
+  // On vérifie si la route commence par /admin ou a meta.requiresAuth
+  const isAdminRoute = to.path.startsWith('/admin') || to.meta.requiresAuth
+  const isAdminLogin = to.name === 'admin-login'
 
-router.beforeEach((to, from, next) => {
-  const user = JSON.parse(localStorage.getItem('customer_user') || 'null')
-  const isAuthenticated = !!user
-
-  // Protection Admin
-  if (to.path.startsWith('/admin') && to.name !== 'admin-login' && !isAuthenticated) {
+  if (isAdminRoute && !isAdminLogin && !isAdminLoggedIn) {
     return next({ name: 'admin-login' })
   }
 
-  // Protection Client (Auth)
-  if (to.meta.auth && !isAuthenticated) {
+  // Si on est sur la page login admin mais déjà connecté admin
+  if (isAdminLogin && isAdminLoggedIn) {
+    return next({ name: 'admin-dashboard' })
+  }
+
+  // 2. Protection des routes CLIENT
+  // On vérifie meta.auth pour les pages privées client
+  if (to.meta.auth && !isCustomerLoggedIn) {
     return next({ name: 'login' })
   }
 
-  // Protection Client (Guest - e.g. /login)
-  if (to.meta.guest && isAuthenticated) {
+  // Si on est sur la page login/register client mais déjà connecté client
+  if (to.meta.guest && isCustomerLoggedIn) {
     return next({ name: 'account-dashboard' })
   }
 
+  // Sinon, on laisse passer
   next()
 })
 
