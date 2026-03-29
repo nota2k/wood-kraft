@@ -66,6 +66,7 @@ function getProductImage(product) {
     text-decoration: none;
     color: inherit;
     cursor: pointer;
+    width: 100%;
 
     &__image-wrapper {
         width: 100%;

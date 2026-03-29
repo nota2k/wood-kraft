@@ -44,6 +44,13 @@ onMounted(() => {
     grid-column: 1 / span 3;
     aspect-ratio: 2/3;
     background-color: var(--color-vert-gris);
+
+    @media (max-width: 768px) {
+      grid-column: 1 / -1;
+      right: 0;
+      aspect-ratio: auto;
+      min-height: 300px;
+    }
     
     @media (max-width: 1024px) {
       max-width: 100%;
@@ -66,6 +73,12 @@ onMounted(() => {
     background-color: var(--color-sable);
     gap: 2rem;
     padding: 3rem;
+
+    @media (max-width: 768px) {
+      grid-column: 1 / -1;
+      top: 0;
+      padding: 2rem 1.5rem;
+    }
   }
   
   &__title {
@@ -75,6 +88,10 @@ onMounted(() => {
     font-weight: 300;
     margin: 0;
     line-height: 0.8em;
+
+    @media (max-width: 768px) {
+      font-size: clamp(2.5rem, 9vw, 4rem);
+    }
   }
   
   &__text {
@@ -84,6 +101,12 @@ onMounted(() => {
     font-weight: 300;
     line-height: 1.6;
     max-width: 600px;
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+      max-width: 100%;
+    }
   }
 }
 </style>
+

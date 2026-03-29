@@ -65,7 +65,7 @@ onMounted(async () => {
     // Initialiser le slider Swiper
     if (sliderRef.value && suggestedProducts.value.length > 0) {
         new Swiper(sliderRef.value, {
-            slidesPerView: '3',
+            slidesPerView: 1,
             spaceBetween: 0,
             loop: true,
             modules: [Navigation],
@@ -76,6 +76,16 @@ onMounted(async () => {
             pagination: {
                 el: '.product-suggestions__pagination',
                 clickable: true,
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 2,
+                    spaceBetween: 0,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 0,
+                },
             },
         })
     }
@@ -108,25 +118,30 @@ onMounted(async () => {
     padding: var(--padding-xs) var(--padding-sm);
     background-color: var(--color-beige);
     border-top: var(--border);
-    max-width: 100%;
+    grid-column: 1 / -1; // span la grille parente
     display: block;
+    overflow: hidden; // empêche les slides de sortir
 
     &__title {
         font-family: 'Lovan', serif;
-        grid-column: 1 / -1;
         font-size: var(--font-lg);
         font-weight: 300;
         color: var(--color-marron);
+        margin-bottom: 2rem;
     }
 
     &__container {
-        max-width: var(--max-width);
-        margin: 2rem auto 0 auto;
+        width: 100%;
+        margin: 0 auto;
         position: relative;
     }
 
     &__slider {
-        overflow: visible;
+        overflow: hidden;
+        width: 100%;
+        // Padding pour que les bordures des cartes ne soient pas rognées
+        padding: 2px;
+        box-sizing: border-box;
     }
 
     &__button-prev,
@@ -138,7 +153,6 @@ onMounted(async () => {
         height: 48px;
         border-radius: 50%;
         border: var(--border);
-        // background-color: var(--color-beige);
         color: var(--color-marron);
         cursor: pointer;
         z-index: 10;
@@ -164,15 +178,31 @@ onMounted(async () => {
 
     &__button-prev {
         left: -60px;
+
+        @media (max-width: 768px) {
+            left: 0;
+        }
     }
 
     &__button-next {
         right: -60px;
+
+        @media (max-width: 768px) {
+            right: 0;
+        }
     }
 
     :deep(.swiper-slide) {
-        width: auto;
         height: auto;
+    }
+
+    :deep(.card-product) {
+        width: 100%;
+        height: 100%;
+        outline: none;
+        border: var(--border);
+        border-right: none; // évite la double bordure entre les slides
     }
 }
 </style>
+

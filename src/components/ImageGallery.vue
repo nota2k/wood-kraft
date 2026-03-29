@@ -27,11 +27,13 @@ onMounted(() => {
 <style scoped lang="scss">
 .image-gallery {
   padding: 4rem 2rem;
-  height: 100vh;
+  min-height: 60vh;
   background-color: var(--color-beige);
+  align-items: center;
 
-  &__container {
-    max-width: 1280px;
+  @media (max-width: 768px) {
+    height: auto;
+    padding: 2rem 1rem;
   }
 
   &__item {
@@ -39,13 +41,20 @@ onMounted(() => {
     background-color: #f0f0f0;
 
     &:nth-child(1) {
-      grid-column: 1 /  3;
+      grid-column: 1 / 3;
 
+      @media (max-width: 768px) {
+        grid-column: 1 / -1;
+      }
     }
 
     &:nth-child(2) {
       grid-column: 4 / span 3;
       width: 100%;
+
+      @media (max-width: 768px) {
+        grid-column: 1 / -1;
+      }
     }
   }
 
@@ -56,3 +65,4 @@ onMounted(() => {
   }
 }
 </style>
+

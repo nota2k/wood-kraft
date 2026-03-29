@@ -37,14 +37,13 @@ onMounted(async () => {
     <div class="our-products__container">
       <h2 ref="titleRef" class="our-products__title">OUR PRODUCTS</h2>
       <div ref="gridRef" class="our-products__grid">
-        <CardProduct 
-          v-for="(product, index) in products" 
-          :key="product.id"
-          :product="product"
-          :class="`our-products__item--${index + 1}`"
-        />
+        <CardProduct v-for="(product, index) in products" :key="product.id" :product="product"
+          :class="`our-products__item--${index + 1}`" />
       </div>
-      <button ref="buttonRef" class="our-products__button" @click="handleMoreClick">More <span class="our-products__button-icon"><MoveRight/></span></button>
+      <button ref="buttonRef" class="our-products__button" @click="handleMoreClick">More <span
+          class="our-products__button-icon">
+          <MoveRight />
+        </span></button>
     </div>
   </section>
 </template>
@@ -53,19 +52,20 @@ onMounted(async () => {
 .our-products {
   padding: 6rem 2rem;
   background-color: var(--color-beige);
+  grid-column: 1 / -1; // span toute la largeur de la grille parente
   display: flex;
-  
+  flex-direction: column;
+
   &__container {
-    max-width: 1280px;
-    margin: 0 auto;
+    width: 100%;
   }
-  
+
   &__title {
     font-family: 'Rokurou', sans-serif;
     font-weight: 300;
     font-size: var(--font-xl);
     color: var(--color-sable);
-    margin-bottom: 4rem;
+    margin-bottom: var(--spacing-md);
     text-align: center;
   }
 
@@ -75,8 +75,10 @@ onMounted(async () => {
     grid-auto-rows: minmax(350px, auto);
     gap: 0;
     align-content: start;
-    margin-bottom: 3rem;
-    border: 1px solid var(--color-marron-dark);
+    margin-bottom: var(--spacing-md);
+    // border: 1px solid var(--color-marron-dark);
+    width: 100%;
+    // overflow: hidden;
 
     :deep(.card-product) {
       border: 1px solid var(--color-marron-dark);
@@ -102,7 +104,8 @@ onMounted(async () => {
 
     @media (max-width: 768px) {
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: none;
+      // grid-template-rows: none;
+      // grid-auto-rows: minmax(250px, auto);
 
       :deep(.card-product .card-product__image-wrapper) {
         aspect-ratio: 3 / 4;
@@ -145,6 +148,8 @@ onMounted(async () => {
   }
 
   @media (max-width: 768px) {
+    padding: 3rem 1rem;
+
     &__item--1,
     &__item--2,
     &__item--3,
@@ -155,7 +160,7 @@ onMounted(async () => {
       grid-row: auto;
     }
   }
-  
+
   &__button {
     max-width: var(--large-button);
     margin: 0 auto;
@@ -164,4 +169,3 @@ onMounted(async () => {
   }
 }
 </style>
-

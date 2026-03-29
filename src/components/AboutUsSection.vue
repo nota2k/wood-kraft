@@ -57,6 +57,10 @@ onMounted(() => {
     position: relative;
     align-self: flex-start;
 
+    @media (max-width: 768px) {
+      grid-column: 1 / -1;
+    }
+
     img {
       width: 100%;
       height: 100%;
@@ -66,7 +70,7 @@ onMounted(() => {
   
   &__title-overlay {
     font-family: "Lovan", serif;
-    font-size: clamp(8rem, 17vw, 17rem);
+    font-size: clamp(4rem, 17vw, 17rem);
     color: var(--color-marron-light);
     z-index: 2;
     pointer-events: none;
@@ -75,6 +79,14 @@ onMounted(() => {
     white-space: nowrap;
     position: relative;
     font-weight: 400;
+
+    @media (max-width: 768px) {
+      grid-column: 1 / -1;
+      font-size: clamp(3.5rem, 14vw, 6rem);
+      white-space: normal;
+      word-break: break-word;
+      margin-bottom: 1rem;
+    }
 
     &__image-wrapper-inner {
       position: absolute;
@@ -86,15 +98,25 @@ onMounted(() => {
     }    
   }
 
-  &__second-image {
-      position: absolute;
-      width: 100%;
-      max-width: 330px;
-      right: 8%;
-      height: 70%;
-      bottom: 0;
-      object-fit: cover;
+  &__second-image-wrapper {
+    @media (max-width: 768px) {
+      display: none;
     }
+  }
+
+  &__second-image {
+    position: absolute;
+    width: 100%;
+    max-width: 330px;
+    right: 8%;
+    height: 70%;
+    bottom: 0;
+    object-fit: cover;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
   
   &__content {
     grid-column: 3 / span 4;
@@ -103,23 +125,42 @@ onMounted(() => {
     display: grid;
     grid-template-columns: subgrid;
     gap: 2rem;
+
+    @media (max-width: 768px) {
+      grid-column: 1 / -1;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
   }
   
   &__text {
     font-family: 'Regarn', sans-serif;
-    font-size: clamp(36px, 2vw, 28px);
+    font-size: clamp(18px, 2vw, 28px);
     color: var(--color-vert-gris);
     font-weight: 200;
     margin-right: 180px;
     text-align: justify;
     grid-column: 1 / span 4;
     line-height: 1.3;
+
+    @media (max-width: 768px) {
+      margin-right: 0;
+      font-size: 1.1rem;
+      text-align: left;
+    }
   }
   
   &__button {
     grid-column: 1 / span 3;
     grid-row: 3 / span 1;
     align-self: flex-end;
+
+    @media (max-width: 768px) {
+      align-self: flex-start;
+    }
   }
 }
 </style>
+

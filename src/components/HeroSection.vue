@@ -81,20 +81,25 @@ onUnmounted(() => ctx?.revert())
 <style scoped lang="scss">
 .hero {
   position: relative;
-  min-height: 100vh;
-  // display: flex;
-  // align-items: center;
-  // justify-content: center;
+  // min-height: 100vh;
   margin-top: 80px;
+  max-width: 100%;
 
   &__image-wrapper {
     width: 100%;
+    max-width: 500px;
     position: relative;
     top: 6vh;
-    height: 700px;
-    left: 0;
-    grid-column: 2 / span 3;
+    height: 80vh;
+    left: 30%;
+    grid-column: 1 / -1;
 
+    @media (max-width: 768px) {
+      height: 75vh;
+      top: 0;
+      left: 0;
+      max-width: 100%;
+    }
   }
 
   &__image {
@@ -110,6 +115,11 @@ onUnmounted(() => ctx?.revert())
     top: 0;
     right: 5vw;
     z-index: 1;
+
+    @media (max-width: 768px) {
+      max-width: 90px;
+      right: 3vw;
+    }
   }
 
   &__content {
@@ -122,6 +132,12 @@ onUnmounted(() => ctx?.revert())
     flex-direction: column;
     align-items: flex-end;
     top: 18vh;
+
+    @media (max-width: 768px) {
+      top: -50px;
+      bottom: 5vh;
+      right: 4vw;
+    }
   }
 
   &__title-wrapper {
@@ -129,8 +145,12 @@ onUnmounted(() => ctx?.revert())
 
     svg {
       width: 90%;
-      height: 100%;
+      height: auto;
       fill: var(--color-marron-dark);
+
+      @media (max-width: 768px) {
+        width: 85vw;
+      }
     }
   }
 
@@ -142,6 +162,10 @@ onUnmounted(() => ctx?.revert())
     color: var(--color-marron-dark);
     font-weight: 300;
     text-transform: lowercase;
+
+    @media (max-width: 768px) {
+      font-size: clamp(1.8rem, 6vw, 2.5rem);
+    }
   }
 }
 </style>

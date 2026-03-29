@@ -46,6 +46,7 @@ onMounted(() => {
 .philosophy {
   padding: 6rem 2rem;
   background-color: var(--color-beige);
+  overflow: hidden;
   
   &__container {
     grid-column: 1 / -1;
@@ -53,13 +54,13 @@ onMounted(() => {
     margin: 0 auto;
     display: grid;
     position: relative;
-    grid-template-columns: subgrid;
+    grid-template-columns: repeat(6, 1fr);
     gap: 6rem;
     align-items: center;
     
-    @media (max-width: 1024px) {
+    @media (max-width: 768px) {
       grid-template-columns: 1fr;
-      gap: 3rem;
+      gap: 2rem;
     }
   }
   
@@ -68,6 +69,12 @@ onMounted(() => {
     grid-row: 1 / span 2;
     position: relative;
     height: 100%;
+
+    @media (max-width: 768px) {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      height: 300px;
+    }
   }
   
   &__title-overlay {
@@ -81,6 +88,13 @@ onMounted(() => {
     text-align: right;
     right: 0;
     width: 100%;
+
+    @media (max-width: 768px) {
+      font-size: clamp(3rem, 15vw, 5rem);
+      top: -30px;
+      text-align: center;
+      word-break: break-word;
+    }
   }
   
   &__image {
@@ -95,6 +109,11 @@ onMounted(() => {
     align-self: flex-start;
     grid-column: 4 / span 3;
     margin-top: 8rem;
+
+    @media (max-width: 768px) {
+      grid-column: 1 / -1;
+      margin-top: 1rem;
+    }
   }
   
   &__text {
@@ -103,12 +122,21 @@ onMounted(() => {
     color: var(--color-marron-light);
     font-weight: 300;
     line-height: 1.6;
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+    }
   }
 
-  &__button {
+  &__button-text {
     grid-column: 4 / span 3;
     width: 100%;
+
+    @media (max-width: 768px) {
+      grid-column: 1 / -1;
+    }
   }
 }
 </style>
+
 

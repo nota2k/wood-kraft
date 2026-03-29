@@ -118,8 +118,10 @@ onMounted(async () => {
 
 .products-section {
   padding: var(--padding-md);
-  max-width: 100%;
-  
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 </style>
 

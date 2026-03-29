@@ -63,18 +63,24 @@ const handlePageChange = async (page) => {
 
 <style scoped lang="scss">
 .product-listing {
-  padding: var(--padding-xs) var(--padding-xs);
+  padding: var(--padding-xs);
   background-color: var(--color-beige);
-  display: grid;
-  max-width: 100%;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  width: 100%;
   
   &__container {
-    max-width: 1280px;
-    margin: 0 auto;
+    width: 100%;
     display: grid;
-    grid-template-columns: subgrid;
-    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--color-marron-dark);
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
   }
   
   &__pagination {
