@@ -47,9 +47,11 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAdminStore } from '@/stores/admin'
+import { useSessionStore } from '@/stores/session'
 
 const router = useRouter()
 const adminStore = useAdminStore()
+const session = useSessionStore()
 
 const form = ref({ email: '', password: '' })
 const loading = ref(false)
@@ -59,7 +61,8 @@ async function handleLogin() {
   loading.value = true
   error.value = ''
   try {
-    await adminStore.login(form.value)
+    const res = await adminStore.login(form.value)
+    session.setServerUser(res.user)
     router.push({ name: 'admin-dashboard' })
   } catch (e) {
     error.value = e.data?.message || 'Identifiants incorrects.'

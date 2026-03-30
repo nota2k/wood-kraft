@@ -1,5 +1,18 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'
-const APP_URL = import.meta.env.VITE_APP_URL || 'http://localhost:8000'
+/**
+ * Origine Laravel pour Sanctum (CSRF). Laisser vide en dev avec proxy Vite : les requêtes
+ * partent du même host que le front (ex. localhost:5173/sanctum/...), sinon le cookie
+ * part sur :8000 et /auth/user voit une session vide → hydrate efface customer_user.
+ */
+const APP_BASE_URL = (import.meta.env.VITE_APP_URL ?? '').trim()
+
+function redirectToCustomerLogin() {
+  localStorage.removeItem('customer_user')
+  window.dispatchEvent(new Event('auth-changed'))
+  void import('@/router').then((m) => {
+    m.default.push({ name: 'login' }).catch(() => {})
+  })
+}
 
 /**
  * Service API pour communiquer avec le backend Laravel
@@ -45,6 +58,10 @@ class ApiService {
 
       if (response.status === 401) {
         if (skipAuthRedirect) {
+          if (endpoint.includes('/customer/')) {
+            localStorage.removeItem('customer_user')
+            window.dispatchEvent(new Event('auth-changed'))
+          }
           const err = new Error('Unauthorized')
           err.status = 401
           throw err
@@ -53,8 +70,7 @@ class ApiService {
           localStorage.removeItem('admin_user')
           window.location.href = '/admin/login'
         } else if (endpoint.includes('/customer/')) {
-          localStorage.removeItem('customer_user')
-          window.location.href = '/login'
+          redirectToCustomerLogin()
         } else {
           localStorage.removeItem('admin_user')
           localStorage.removeItem('customer_user')
@@ -107,6 +123,10 @@ class ApiService {
 
       if (response.status === 401) {
         if (skipAuthRedirect) {
+          if (endpoint.includes('/customer/')) {
+            localStorage.removeItem('customer_user')
+            window.dispatchEvent(new Event('auth-changed'))
+          }
           const err = new Error('Unauthorized')
           err.status = 401
           throw err
@@ -115,8 +135,7 @@ class ApiService {
           localStorage.removeItem('admin_user')
           window.location.href = '/admin/login'
         } else if (endpoint.includes('/customer/')) {
-          localStorage.removeItem('customer_user')
-          window.location.href = '/login'
+          redirectToCustomerLogin()
         } else {
           localStorage.removeItem('admin_user')
           localStorage.removeItem('customer_user')
@@ -135,7 +154,10 @@ class ApiService {
 
       return await response.json()
     } catch (error) {
-      console.error('API request failed:', error)
+      const quiet401 = skipAuthRedirect && error?.status === 401
+      if (!quiet401) {
+        console.error('API request failed:', error)
+      }
       throw error
     }
   }
@@ -185,7 +207,9 @@ class ApiService {
   // ===== AUTH =====
 
   async getCsrfCookie() {
-    await fetch(`${APP_URL}/sanctum/csrf-cookie`, {
+    const base = APP_BASE_URL.replace(/\/$/, '')
+    const url = base ? `${base}/sanctum/csrf-cookie` : '/sanctum/csrf-cookie'
+    await fetch(url, {
       credentials: 'include',
     })
   }
@@ -209,7 +233,7 @@ class ApiService {
    */
   async getAuthUser() {
     await this.getCsrfCookie()
-    return this.get('/auth/user')
+    return this.get('/auth/user', {}, { skipAuthRedirect: true })
   }
 
   /** @deprecated utiliser getAuthUser */

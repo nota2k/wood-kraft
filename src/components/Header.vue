@@ -15,13 +15,15 @@ const isNavOpen = ref(false)
 const user = ref(null)
 const isAdmin = ref(false)
 
+const isAdminRole = (u) => u && String(u.role ?? '').toLowerCase() === 'admin'
+
 const checkUser = () => {
   const customer = JSON.parse(localStorage.getItem('customer_user') || 'null')
   const admin = JSON.parse(localStorage.getItem('admin_user') || 'null')
-  
+
   if (customer) {
     user.value = customer
-    isAdmin.value = false
+    isAdmin.value = isAdminRole(customer)
   } else if (admin) {
     user.value = admin
     isAdmin.value = true

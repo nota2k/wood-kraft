@@ -39,7 +39,9 @@ export const useCartStore = defineStore('cart', {
                         selectedColor: item.options // options contient la couleur
                     }))
                 } catch (err) {
-                    console.error('Erreur chargement panier distant:', err)
+                    if (err?.status !== 401) {
+                        console.error('Erreur chargement panier distant:', err)
+                    }
                 }
             }
         },
@@ -50,7 +52,9 @@ export const useCartStore = defineStore('cart', {
                 try {
                     await api.syncCart(this.items)
                 } catch (err) {
-                    console.error('Erreur synchronisation panier:', err)
+                    if (err?.status !== 401) {
+                        console.error('Erreur synchronisation panier:', err)
+                    }
                 }
             }
         },

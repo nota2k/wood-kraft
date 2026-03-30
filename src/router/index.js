@@ -2,6 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import { useSessionStore } from '@/stores/session'
 
+/** Routes espace client : ne pas se fier seulement à to.meta.auth (fusion selon la navigation). */
+function requiresClientAreaAuth(route) {
+  if (route.path.startsWith('/compte')) {
+    return true
+  }
+  return route.matched.some((record) => record.meta.auth === true)
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -45,21 +53,25 @@ const router = createRouter({
       {
         path: '',
         name: 'account-dashboard',
+        meta: { auth: true },
         component: () => import('../views/account/AccountDashboardView.vue')
       },
       {
         path: 'commandes',
         name: 'account-orders',
+        meta: { auth: true },
         component: () => import('../views/account/AccountOrdersView.vue')
       },
       {
         path: 'commandes/:id',
         name: 'account-order-detail',
+        meta: { auth: true },
         component: () => import('../views/account/AccountOrderDetailView.vue')
       },
       {
         path: 'profil',
         name: 'account-profile',
+        meta: { auth: true },
         component: () => import('../views/account/AccountProfileView.vue')
       }
     ]
@@ -149,13 +161,17 @@ router.beforeEach(async (to, from, next) => {
     return next({ name: 'admin-dashboard' })
   }
 
-  // 2. Protection des routes CLIENT
-  // On vérifie meta.auth pour les pages privées client
-  if (to.meta.auth && !isCustomerLoggedIn) {
+  // 2. Protection des routes CLIENT (/compte)
+  // Un admin n’a que admin_user en localStorage (hydrate) : sans cette condition il était
+  // renvoyé vers /login alors que la session est valide.
+  if (requiresClientAreaAuth(to) && !isCustomerLoggedIn && !isAdminLoggedIn) {
     return next({ name: 'login' })
   }
 
-  // Si on est sur la page login/register client mais déjà connecté client
+  // Page login client : rediriger si déjà connecté (client ou admin)
+  if (to.meta.guest && isAdminLoggedIn) {
+    return next({ name: 'admin-dashboard' })
+  }
   if (to.meta.guest && isCustomerLoggedIn) {
     return next({ name: 'account-dashboard' })
   }

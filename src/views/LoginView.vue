@@ -19,17 +19,35 @@
 
         <div class="form-group">
           <label>Email</label>
-          <input v-model="form.email" type="email" placeholder="votre@email.com" required />
+          <input
+            v-model="form.email"
+            type="email"
+            placeholder="votre@email.com"
+            required
+            autocomplete="email"
+          />
         </div>
 
         <div class="form-group">
           <label>Mot de passe</label>
-          <input v-model="form.password" type="password" placeholder="••••••••" required />
+          <input
+            v-model="form.password"
+            type="password"
+            placeholder="••••••••"
+            required
+            autocomplete="current-password"
+          />
         </div>
 
         <div v-if="isRegister" class="form-group">
           <label>Confirmer le mot de passe</label>
-          <input v-model="form.password_confirmation" type="password" placeholder="••••••••" required />
+          <input
+            v-model="form.password_confirmation"
+            type="password"
+            placeholder="••••••••"
+            required
+            autocomplete="new-password"
+          />
         </div>
 
         <div v-if="error" class="error-message">
@@ -56,10 +74,12 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
+import { useSessionStore } from '@/stores/session'
 import api from '@/services/api'
 import { ArrowLeft } from 'lucide-vue-next'
 
 const router = useRouter()
+const session = useSessionStore()
 const isRegister = ref(false)
 const loading = ref(false)
 const error = ref(null)
@@ -80,7 +100,7 @@ async function handleSubmit() {
       ? await api.register(form)
       : await api.login(form)
     
-    // On stocke l'utilisateur
+    session.setServerUser(response.user)
     localStorage.setItem('customer_user', JSON.stringify(response.user))
     window.dispatchEvent(new Event('auth-changed'))
 

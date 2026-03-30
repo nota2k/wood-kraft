@@ -49,13 +49,16 @@ import { useRouter } from 'vue-router'
 import { LayoutDashboard, ShoppingBag, User, LogOut } from 'lucide-vue-next'
 import api from '@/services/api'
 import { useCartStore } from '@/stores/cart'
+import { useSessionStore } from '@/stores/session'
 
 const router = useRouter()
+const session = useSessionStore()
 
 async function handleLogout() {
   try {
     await api.post('/auth/logout')
     localStorage.removeItem('customer_user')
+    session.setServerUser(null)
     const cartStore = useCartStore()
     cartStore.clearCart() // Réinitialise le panier localement (et distant via sync si on voulait, mais ici on est déconnecté)
     window.dispatchEvent(new Event('auth-changed'))
@@ -63,6 +66,7 @@ async function handleLogout() {
   } catch (err) {
     // Si déjà expiré, on vide juste le localstorage et on redirige
     localStorage.removeItem('customer_user')
+    session.setServerUser(null)
     const cartStore = useCartStore()
     cartStore.clearCart()
     window.dispatchEvent(new Event('auth-changed'))

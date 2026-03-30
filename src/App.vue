@@ -15,14 +15,30 @@ import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import { initSmoothScroll, destroySmoothScroll, getLenis } from './composables/useSmoothScroll'
 import { useCartStore } from './stores/cart'
+import { useSessionStore } from './stores/session'
+
+function syncServerUserAfterAuthEvent() {
+  const session = useSessionStore()
+  const raw = localStorage.getItem('customer_user') || localStorage.getItem('admin_user')
+  if (!raw) {
+    session.setServerUser(null)
+  }
+}
 
 onMounted(() => {
   initSmoothScroll()
+  window.addEventListener('auth-changed', syncServerUserAfterAuthEvent)
+
   const cartStore = useCartStore()
-  cartStore.loadCart()
+  const session = useSessionStore()
+  // Panier distant seulement si la session est confirmée par le serveur (évite GET /customer/cart 401 au chargement)
+  if (session.serverUser) {
+    cartStore.loadCart()
+  }
 })
 
 onUnmounted(() => {
+  window.removeEventListener('auth-changed', syncServerUserAfterAuthEvent)
   destroySmoothScroll()
 })
 

@@ -71,6 +71,7 @@
 import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAdminStore } from '@/stores/admin'
+import { useSessionStore } from '@/stores/session'
 import {
   LayoutDashboard, Package, Tag, LogOut,
   ChevronLeft, ChevronRight, Menu, X, ExternalLink, ShoppingBag
@@ -79,6 +80,7 @@ import {
 const router = useRouter()
 const route = useRoute()
 const adminStore = useAdminStore()
+const session = useSessionStore()
 
 const desktopCollapsed = ref(false)
 const mobileOpen = ref(false)
@@ -101,6 +103,7 @@ const currentProductLabel = computed(() => {
 
 async function handleLogout() {
   await adminStore.logout()
+  session.setServerUser(null)
   window.dispatchEvent(new Event('auth-changed'))
   router.push({ name: 'admin-login' })
 }
