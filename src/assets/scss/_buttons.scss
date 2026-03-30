@@ -1,9 +1,7 @@
-:root{
-
-}
+:root {}
 
 
-button{
+button {
     padding: var(--padding-xs) var(--padding-sm);
     background-color: var(--primary-color);
     display: inline-flex;
@@ -14,4 +12,27 @@ button{
     font-weight: 200;
     color: var(--color-dark);
     text-align: left;
+    cursor: pointer;
+
+    &.more {
+        transition: all 0.3s ease-in-out;
+
+        svg {
+            position: relative;
+            left: -20%;
+            transition: all 0.3s ease-in-out;
+        }
+
+        &:hover {
+            opacity: 0.8;
+            background-color: var(--color-dark);
+            color: var(--color-beige);
+
+            svg {
+                transform: translateX(0);
+                left: 0;
+            }
+        }
+
+    }
 }

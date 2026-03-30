@@ -22,22 +22,24 @@ onMounted(() => {
     <div class="philosophy__container">
       <h2 ref="titleOverlay" class="philosophy__title-overlay">PHILOSOPHY</h2>
       <div ref="imageWrapper" class="philosophy__image-wrapper">
-        
-        <img 
-          src="@/assets/images/home-philosophy.png" 
-          alt="Philosophy" 
-          class="philosophy__image"
-        />
+
+        <img src="@/assets/images/home-philosophy.png" alt="Philosophy" class="philosophy__image" />
       </div>
       <div ref="content" class="philosophy__content">
         <p class="philosophy__text">
-          Pour nous, le bois est un matériau vivant qui évolue avec le temps. Nous choisissons d'accompagner 
-          cette évolution plutôt que de la contraindre. Chaque pièce que nous créons est pensée pour durer, 
-          pour s'adapter, pour raconter une histoire. Nous rejetons la production rapide et privilégions 
+          Pour nous, le bois est un matériau vivant qui évolue avec le temps. Nous choisissons d'accompagner
+          cette évolution plutôt que de la contraindre. Chaque pièce que nous créons est pensée pour durer,
+          pour s'adapter, pour raconter une histoire. Nous rejetons la production rapide et privilégions
           la qualité, la durabilité et l'authenticité.
         </p>
       </div>
-        <button ref="button" class="philosophy__button-text">More <span class="philosophy__button-icon"><MoveRight/></span></button>
+      <button ref="button" class="philosophy__button-text more">More <svg xmlns="http://www.w3.org/2000/svg" width="24"
+          height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" class="lucide lucide-circle-arrow-right-icon lucide-circle-arrow-right">
+          <circle cx="12" cy="12" r="10" />
+          <path d="m12 16 4-4-4-4" />
+          <path d="M8 12h8" />
+        </svg></button>
     </div>
   </section>
 </template>
@@ -47,7 +49,7 @@ onMounted(() => {
   padding: 6rem 2rem;
   background-color: var(--color-beige);
   overflow: hidden;
-  
+
   &__container {
     grid-column: 1 / -1;
     max-width: 1280px;
@@ -57,13 +59,13 @@ onMounted(() => {
     grid-template-columns: repeat(6, 1fr);
     gap: 6rem;
     align-items: center;
-    
+
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
       gap: 2rem;
     }
   }
-  
+
   &__image-wrapper {
     grid-column: 2 / span 2;
     grid-row: 1 / span 2;
@@ -76,7 +78,7 @@ onMounted(() => {
       height: 300px;
     }
   }
-  
+
   &__title-overlay {
     position: absolute;
     top: -80px;
@@ -96,7 +98,7 @@ onMounted(() => {
       word-break: break-word;
     }
   }
-  
+
   &__image {
     width: 100%;
     height: 100%;
@@ -104,7 +106,7 @@ onMounted(() => {
     position: relative;
     z-index: 1;
   }
-  
+
   &__content {
     align-self: flex-start;
     grid-column: 4 / span 3;
@@ -115,7 +117,7 @@ onMounted(() => {
       margin-top: 1rem;
     }
   }
-  
+
   &__text {
     font-family: 'Regarn', sans-serif;
     font-size: var(--font-md);
@@ -138,5 +140,3 @@ onMounted(() => {
   }
 }
 </style>
-
-

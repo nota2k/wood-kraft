@@ -18,32 +18,30 @@ onMounted(() => {
 
 <template>
   <section class="about-us">
-      <div ref="imageWrapper" class="about-us__image-wrapper">
-        <div class="about-us__image-wrapper-inner">
-        <img
-          src="@/assets/images/home-aboutus.png"
-          alt="Artisan travaillant le bois"
-          class="about-us__image"
-        />
-        </div>
+    <div ref="imageWrapper" class="about-us__image-wrapper">
+      <div class="about-us__image-wrapper-inner">
+        <img src="@/assets/images/home-aboutus.png" alt="Artisan travaillant le bois" class="about-us__image" />
       </div>
-      <div ref="secondImage" class="about-us__second-image-wrapper">
-        <img
-          src="@/assets/images/home-aboutus-02.png"
-          alt="Artisan travaillant le bois"
-          class="about-us__second-image"
-        />
-      </div>
-      <div ref="content" class="about-us__content">
-        <h2 ref="titleOverlay" class="about-us__title-overlay">ABOUT US</h2>
+    </div>
+    <div ref="secondImage" class="about-us__second-image-wrapper">
+      <img src="@/assets/images/home-aboutus-02.png" alt="Artisan travaillant le bois" class="about-us__second-image" />
+    </div>
+    <div ref="content" class="about-us__content">
+      <h2 ref="titleOverlay" class="about-us__title-overlay">ABOUT US</h2>
 
-        <p class="about-us__text">
-          Derrière chaque création se cache un ébéniste passionné, amoureux du travail manuel et du détail. 
-          Nous concevons et fabriquons des meubles sur mesure, en collaboration étroite avec nos clients. 
-          Chaque projet est une aventure unique, où le bois révèle son caractère et sa beauté naturelle.
-        </p>
-        <button class="about-us__button">More →</button>
-      </div>
+      <p class="about-us__text">
+        Derrière chaque création se cache un ébéniste passionné, amoureux du travail manuel et du détail.
+        Nous concevons et fabriquons des meubles sur mesure, en collaboration étroite avec nos clients.
+        Chaque projet est une aventure unique, où le bois révèle son caractère et sa beauté naturelle.
+      </p>
+      <button class="about-us__button more">More <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" class="lucide lucide-circle-arrow-right-icon lucide-circle-arrow-right">
+          <circle cx="12" cy="12" r="10" />
+          <path d="m12 16 4-4-4-4" />
+          <path d="M8 12h8" />
+        </svg></button>
+    </div>
   </section>
 </template>
 
@@ -51,7 +49,7 @@ onMounted(() => {
 .about-us {
   padding: 6rem 2rem;
   background-color: var(--color-beige);
-  
+
   &__image-wrapper {
     grid-column: 1 / span 5;
     position: relative;
@@ -67,7 +65,7 @@ onMounted(() => {
       object-fit: cover;
     }
   }
-  
+
   &__title-overlay {
     font-family: "Lovan", serif;
     font-size: clamp(4rem, 17vw, 17rem);
@@ -95,7 +93,7 @@ onMounted(() => {
       width: 100%;
       height: 100%;
       z-index: 1;
-    }    
+    }
   }
 
   &__second-image-wrapper {
@@ -117,7 +115,7 @@ onMounted(() => {
       display: none;
     }
   }
-  
+
   &__content {
     grid-column: 3 / span 4;
     position: relative;
@@ -134,7 +132,7 @@ onMounted(() => {
       gap: 1.5rem;
     }
   }
-  
+
   &__text {
     font-family: 'Regarn', sans-serif;
     font-size: clamp(18px, 2vw, 28px);
@@ -151,7 +149,7 @@ onMounted(() => {
       text-align: left;
     }
   }
-  
+
   &__button {
     grid-column: 1 / span 3;
     grid-row: 3 / span 1;
@@ -163,4 +161,3 @@ onMounted(() => {
   }
 }
 </style>
-

@@ -77,10 +77,17 @@ const breadcrumbItems = computed(() => {
   ]
 })
 
+const wasAdded = ref(false)
+
 const handleAddToCart = () => {
   if (!product.value) return
 
   cartStore.addItem(product.value.id, selectedColor.value, 1)
+  
+  wasAdded.value = true
+  setTimeout(() => {
+    wasAdded.value = false
+  }, 2000)
 }
 
 const formattedMaterial = computed(() => {
@@ -152,7 +159,13 @@ const formattedDimensions = computed(() => {
         </div>
 
         <div class="product-view__actions">
-          <button class="product-view__button" @click="handleAddToCart">Ajouter au panier</button>
+          <button 
+            :class="['product-view__button', { 'product-view__button--success': wasAdded }]" 
+            @click="handleAddToCart"
+            :disabled="wasAdded"
+          >
+            {{ wasAdded ? 'Ajouté' : 'Ajouter au panier' }}
+          </button>
           <button class="product-view__button product-view__button--secondary">Contacter</button>
         </div>
       </div>
@@ -300,10 +313,20 @@ const formattedDimensions = computed(() => {
     outline: var(--border);
     border-radius: var(--border-radius);
     cursor: pointer;
-    transition: opacity var(--transition);
+    transition: background-color var(--transition), color var(--transition), opacity var(--transition);
 
-    &:hover {
+    &:hover:not(:disabled) {
       opacity: 0.9;
+    }
+
+    &:disabled {
+      cursor: default;
+    }
+
+    &--success {
+      background-color: var(--color-vert);
+      color: var(--color-marron);
+      outline-color: var(--color-vert);
     }
 
     &--secondary {

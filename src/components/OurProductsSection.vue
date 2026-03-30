@@ -40,10 +40,15 @@ onMounted(async () => {
         <CardProduct v-for="(product, index) in products" :key="product.id" :product="product"
           :class="`our-products__item--${index + 1}`" />
       </div>
-      <button ref="buttonRef" class="our-products__button" @click="handleMoreClick">More <span
-          class="our-products__button-icon">
-          <MoveRight />
-        </span></button>
+      <button class="our-products__button more" @click="handleMoreClick">More <svg xmlns="http://www.w3.org/2000/svg"
+          width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-circle-arrow-right-icon lucide-circle-arrow-right">
+          <circle cx="12" cy="12" r="10" />
+          <path d="m12 16 4-4-4-4" />
+          <path d="M8 12h8" />
+        </svg>
+      </button>
     </div>
   </section>
 </template>
@@ -83,6 +88,7 @@ onMounted(async () => {
     :deep(.card-product) {
       border: 1px solid var(--color-marron-dark);
       border-radius: 0;
+      transform: translate(0px, 0px) !important;
 
       .card-product__image-wrapper {
         aspect-ratio: inherit;

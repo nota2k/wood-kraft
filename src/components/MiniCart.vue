@@ -49,8 +49,8 @@ const handleClick = () => {
 
     &__badge {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: -1px;
+        right: -2px;
         background-color: var(--color-marron);
         color: var(--color-beige);
         border-radius: 50%;
