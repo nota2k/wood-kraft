@@ -29,6 +29,11 @@ export const useAdminStore = defineStore('admin', () => {
   async function checkAuth() {
     try {
       const response = await api.getMe()
+      if (!response?.user || response.user.role !== 'admin') {
+        user.value = null
+        localStorage.removeItem('admin_user')
+        return false
+      }
       user.value = response.user
       localStorage.setItem('admin_user', JSON.stringify(response.user))
       return true

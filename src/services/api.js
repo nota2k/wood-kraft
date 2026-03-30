@@ -20,30 +20,46 @@ class ApiService {
 
   /**
    * Effectue une requête HTTP
+   * @param {object} options - options fetch ; utiliser skipAuthRedirect: true pour /auth/user (évite une redirection sur visiteur anonyme)
    */
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`
-    
+    const { skipAuthRedirect = false, headers: optHeaders, ...restOptions } = options
+
     // Récupération du token CSRF depuis le cookie (Sanctum le met dans XSRF-TOKEN)
     const csrfToken = this.getCookie('XSRF-TOKEN')
-    
+
     const config = {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         ...(csrfToken ? { 'X-XSRF-TOKEN': decodeURIComponent(csrfToken) } : {}),
-        ...options.headers
+        ...optHeaders,
       },
-      ...options
+      ...restOptions,
     }
 
     try {
       const response = await fetch(url, config)
 
       if (response.status === 401) {
-        localStorage.removeItem('admin_user')
-        window.location.href = '/admin/login'
+        if (skipAuthRedirect) {
+          const err = new Error('Unauthorized')
+          err.status = 401
+          throw err
+        }
+        if (endpoint.includes('/admin/')) {
+          localStorage.removeItem('admin_user')
+          window.location.href = '/admin/login'
+        } else if (endpoint.includes('/customer/')) {
+          localStorage.removeItem('customer_user')
+          window.location.href = '/login'
+        } else {
+          localStorage.removeItem('admin_user')
+          localStorage.removeItem('customer_user')
+          throw new Error('Unauthorized')
+        }
         throw new Error('Unauthorized')
       }
 
@@ -66,9 +82,10 @@ class ApiService {
   /**
    * Requête avec FormData (upload de fichiers)
    */
-  async requestForm(endpoint, formData, method = 'POST') {
+  async requestForm(endpoint, formData, method = 'POST', meta = {}) {
     const url = `${this.baseURL}${endpoint}`
-    
+    const skipAuthRedirect = meta.skipAuthRedirect === true
+
     // Récupération du token CSRF
     const csrfToken = this.getCookie('XSRF-TOKEN')
 
@@ -86,8 +103,22 @@ class ApiService {
       const response = await fetch(url, config)
 
       if (response.status === 401) {
-        localStorage.removeItem('admin_user')
-        window.location.href = '/admin/login'
+        if (skipAuthRedirect) {
+          const err = new Error('Unauthorized')
+          err.status = 401
+          throw err
+        }
+        if (endpoint.includes('/admin/')) {
+          localStorage.removeItem('admin_user')
+          window.location.href = '/admin/login'
+        } else if (endpoint.includes('/customer/')) {
+          localStorage.removeItem('customer_user')
+          window.location.href = '/login'
+        } else {
+          localStorage.removeItem('admin_user')
+          localStorage.removeItem('customer_user')
+          throw new Error('Unauthorized')
+        }
         throw new Error('Unauthorized')
       }
 
@@ -108,11 +139,12 @@ class ApiService {
 
   /**
    * GET request
+   * @param {object} [requestOptions] - ex. { skipAuthRedirect: true }
    */
-  async get(endpoint, params = {}) {
+  async get(endpoint, params = {}, requestOptions = {}) {
     const queryString = new URLSearchParams(params).toString()
     const url = queryString ? `${endpoint}?${queryString}` : endpoint
-    return this.request(url, { method: 'GET' })
+    return this.request(url, { method: 'GET', ...requestOptions })
   }
 
   /**
@@ -162,6 +194,24 @@ class ApiService {
 
   async logout() {
     return this.post('/auth/logout')
+  }
+
+  /**
+   * Utilisateur courant (session Laravel). 401 = anonyme, sans redirection.
+   */
+  async getAuthUser() {
+    await this.getCsrfCookie()
+    try {
+      return await this.get('/auth/user', {}, { skipAuthRedirect: true })
+    } catch (e) {
+      if (e.status === 401) return null
+      throw e
+    }
+  }
+
+  /** @deprecated utiliser getAuthUser */
+  async getMe() {
+    return this.getAuthUser()
   }
 
   // ===== CART =====

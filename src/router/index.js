@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useSessionStore } from '@/stores/session'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -122,10 +123,15 @@ const router = createRouter({
   scrollBehavior() { return false },
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  const session = useSessionStore()
+  if (!session.hydrated) {
+    await session.hydrate()
+  }
+
   const adminUser = localStorage.getItem('admin_user')
   const customerUser = localStorage.getItem('customer_user')
-  
+
   const isAdminLoggedIn = !!adminUser
   const isCustomerLoggedIn = !!customerUser
 

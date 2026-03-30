@@ -5,10 +5,18 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import { useSessionStore } from './stores/session'
 
-const app = createApp(App)
+async function bootstrap() {
+  const app = createApp(App)
+  const pinia = createPinia()
+  app.use(pinia)
 
-app.use(createPinia())
-app.use(router)
+  const session = useSessionStore()
+  await session.hydrate()
 
-app.mount('#app')
+  app.use(router)
+  app.mount('#app')
+}
+
+bootstrap()
