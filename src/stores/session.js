@@ -34,13 +34,22 @@ export const useSessionStore = defineStore('session', () => {
           localStorage.removeItem('admin_user')
         }
         window.dispatchEvent(new Event('auth-changed'))
+      } else {
+        // Évite un état "faux connecté" (localStorage ancien, session serveur absente)
+        const hadAuth =
+          !!localStorage.getItem('customer_user') || !!localStorage.getItem('admin_user')
+        localStorage.removeItem('customer_user')
+        localStorage.removeItem('admin_user')
+        if (hadAuth) {
+          window.dispatchEvent(new Event('auth-changed'))
+        }
       }
-      // Ne pas effacer localStorage quand user est null : /auth/user peut renvoyer null
-      // (cookie pas encore aligné avec le proxy, premier rendu, etc.) alors que la session
-      // est encore valide. La déconnexion réelle passe par logout ou 401 sur /customer/*.
     } catch (e) {
       console.error('Session hydrate failed:', e)
       serverUser.value = null
+      localStorage.removeItem('customer_user')
+      localStorage.removeItem('admin_user')
+      window.dispatchEvent(new Event('auth-changed'))
     } finally {
       hydrated.value = true
     }

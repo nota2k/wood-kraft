@@ -96,13 +96,15 @@ async function handleSubmit() {
   error.value = null
 
   try {
-    const response = isRegister.value 
+    await (isRegister.value 
       ? await api.register(form)
-      : await api.login(form)
-    
-    session.setServerUser(response.user)
-    localStorage.setItem('customer_user', JSON.stringify(response.user))
-    window.dispatchEvent(new Event('auth-changed'))
+      : await api.login(form))
+
+    // Vérifie que la session Laravel est réellement persistée (cookie + auth serveur)
+    await session.hydrate()
+    if (!session.serverUser) {
+      throw new Error('SESSION_NOT_PERSISTED')
+    }
 
     // Navigation d’abord : le garde-fou router lit localStorage ; loadCart après (évite 401 panier → redirection forcée)
     await router.push({ name: 'account-dashboard' })
@@ -110,7 +112,15 @@ async function handleSubmit() {
     const cartStore = useCartStore()
     await cartStore.loadCart()
   } catch (err) {
-    error.value = err.data?.message || 'Identifiants incorrects.'
+    session.setServerUser(null)
+    localStorage.removeItem('customer_user')
+    localStorage.removeItem('admin_user')
+    window.dispatchEvent(new Event('auth-changed'))
+    if (err?.message === 'SESSION_NOT_PERSISTED') {
+      error.value = 'Connexion incomplète: session non reconnue par le serveur. Réessayez.'
+    } else {
+      error.value = err.data?.message || 'Identifiants incorrects.'
+    }
   } finally {
     loading.value = false
   }

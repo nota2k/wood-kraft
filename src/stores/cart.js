@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import api from '@/services/api'
+import { useSessionStore } from '@/stores/session'
 
 export const useCartStore = defineStore('cart', {
     state: () => ({
@@ -28,9 +29,16 @@ export const useCartStore = defineStore('cart', {
     },
 
     actions: {
+        canSyncWithServer() {
+            const session = useSessionStore()
+            const user = session.serverUser
+            if (!user) return false
+            const isAdmin = String(user.role ?? '').toLowerCase() === 'admin'
+            return !isAdmin
+        },
+
         async loadCart() {
-            const user = localStorage.getItem('customer_user')
-            if (user) {
+            if (this.canSyncWithServer()) {
                 try {
                     const dbItems = await api.fetchCart()
                     this.items = dbItems.map(item => ({
@@ -47,8 +55,7 @@ export const useCartStore = defineStore('cart', {
         },
 
         async sync() {
-            const user = localStorage.getItem('customer_user')
-            if (user) {
+            if (this.canSyncWithServer()) {
                 try {
                     await api.syncCart(this.items)
                 } catch (err) {

@@ -45,10 +45,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import api from '@/services/api'
+import { useSessionStore } from '@/stores/session'
 
-const user = ref(JSON.parse(localStorage.getItem('customer_user')))
+const session = useSessionStore()
+const user = computed(() => session.serverUser)
 const orders = ref([])
 const loading = ref(true)
 

@@ -14,6 +14,33 @@ function redirectToCustomerLogin() {
   })
 }
 
+function unauthorizedError() {
+  const err = new Error('Unauthorized')
+  err.status = 401
+  return err
+}
+
+async function unauthorizedErrorFromResponse(response, endpoint) {
+  const err = unauthorizedError()
+  err.endpoint = endpoint
+  err.url = response.url
+  err.statusText = response.statusText
+  try {
+    err.data = await response.clone().json()
+  } catch {
+    const text = await response.clone().text().catch(() => '')
+    if (text) {
+      err.data = { raw: text }
+    }
+  }
+  return err
+}
+
+function shouldAttempt401Retry(endpoint, alreadyRetried) {
+  if (alreadyRetried) return false
+  return endpoint.includes('/customer/') || endpoint.includes('/admin/')
+}
+
 /**
  * Service API pour communiquer avec le backend Laravel
  */
@@ -32,12 +59,24 @@ class ApiService {
   }
 
   /**
+   * Vérifie si la session serveur est encore valide avant de forcer une déconnexion client.
+   */
+  async hasValidServerSession() {
+    try {
+      const authData = await this.get('/auth/user', {}, { skipAuthRedirect: true })
+      return !!authData?.user
+    } catch {
+      return false
+    }
+  }
+
+  /**
    * Effectue une requête HTTP
    * @param {object} options - options fetch ; skipAuthRedirect: true pour certains appels où un 401 est attendu sans redirection
    */
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`
-    const { skipAuthRedirect = false, headers: optHeaders, ...restOptions } = options
+    const { skipAuthRedirect = false, _retry401 = false, headers: optHeaders, ...restOptions } = options
 
     // Récupération du token CSRF depuis le cookie (Sanctum le met dans XSRF-TOKEN)
     const csrfToken = this.getCookie('XSRF-TOKEN')
@@ -57,26 +96,33 @@ class ApiService {
       const response = await fetch(url, config)
 
       if (response.status === 401) {
+        const unauthorized = await unauthorizedErrorFromResponse(response, endpoint)
+        if (shouldAttempt401Retry(endpoint, _retry401)) {
+          // Tolère les 401 transitoires juste après login (cookie/session en cours d'alignement)
+          await new Promise((resolve) => setTimeout(resolve, 180))
+          return this.request(endpoint, { ...options, _retry401: true })
+        }
         if (skipAuthRedirect) {
-          if (endpoint.includes('/customer/')) {
-            localStorage.removeItem('customer_user')
-            window.dispatchEvent(new Event('auth-changed'))
-          }
-          const err = new Error('Unauthorized')
-          err.status = 401
-          throw err
+          // Mode silencieux: on laisse l'appelant décider (pas de déconnexion implicite).
+          throw unauthorized
         }
         if (endpoint.includes('/admin/')) {
-          localStorage.removeItem('admin_user')
-          window.location.href = '/admin/login'
+          const stillAuthenticated = await this.hasValidServerSession()
+          if (!stillAuthenticated) {
+            localStorage.removeItem('admin_user')
+            window.location.href = '/admin/login'
+          }
         } else if (endpoint.includes('/customer/')) {
-          redirectToCustomerLogin()
+          const stillAuthenticated = await this.hasValidServerSession()
+          if (!stillAuthenticated) {
+            redirectToCustomerLogin()
+          }
         } else {
           localStorage.removeItem('admin_user')
           localStorage.removeItem('customer_user')
-          throw new Error('Unauthorized')
+          throw unauthorized
         }
-        throw new Error('Unauthorized')
+        throw unauthorized
       }
 
       if (!response.ok) {
@@ -92,7 +138,14 @@ class ApiService {
     } catch (error) {
       const quiet401 = skipAuthRedirect && error?.status === 401
       if (!quiet401) {
-        console.error('API request failed:', error)
+        console.error('API request failed:', {
+          endpoint,
+          status: error?.status,
+          message: error?.message,
+          data: error?.data,
+          statusText: error?.statusText,
+          url: error?.url,
+        })
       }
       throw error
     }
@@ -104,6 +157,7 @@ class ApiService {
   async requestForm(endpoint, formData, method = 'POST', meta = {}) {
     const url = `${this.baseURL}${endpoint}`
     const skipAuthRedirect = meta.skipAuthRedirect === true
+    const retry401 = meta._retry401 === true
 
     // Récupération du token CSRF
     const csrfToken = this.getCookie('XSRF-TOKEN')
@@ -122,26 +176,32 @@ class ApiService {
       const response = await fetch(url, config)
 
       if (response.status === 401) {
+        const unauthorized = await unauthorizedErrorFromResponse(response, endpoint)
+        if (shouldAttempt401Retry(endpoint, retry401)) {
+          await new Promise((resolve) => setTimeout(resolve, 180))
+          return this.requestForm(endpoint, formData, method, { ...meta, _retry401: true })
+        }
         if (skipAuthRedirect) {
-          if (endpoint.includes('/customer/')) {
-            localStorage.removeItem('customer_user')
-            window.dispatchEvent(new Event('auth-changed'))
-          }
-          const err = new Error('Unauthorized')
-          err.status = 401
-          throw err
+          // Mode silencieux: on laisse l'appelant décider (pas de déconnexion implicite).
+          throw unauthorized
         }
         if (endpoint.includes('/admin/')) {
-          localStorage.removeItem('admin_user')
-          window.location.href = '/admin/login'
+          const stillAuthenticated = await this.hasValidServerSession()
+          if (!stillAuthenticated) {
+            localStorage.removeItem('admin_user')
+            window.location.href = '/admin/login'
+          }
         } else if (endpoint.includes('/customer/')) {
-          redirectToCustomerLogin()
+          const stillAuthenticated = await this.hasValidServerSession()
+          if (!stillAuthenticated) {
+            redirectToCustomerLogin()
+          }
         } else {
           localStorage.removeItem('admin_user')
           localStorage.removeItem('customer_user')
-          throw new Error('Unauthorized')
+          throw unauthorized
         }
-        throw new Error('Unauthorized')
+        throw unauthorized
       }
 
       if (!response.ok) {
@@ -156,7 +216,14 @@ class ApiService {
     } catch (error) {
       const quiet401 = skipAuthRedirect && error?.status === 401
       if (!quiet401) {
-        console.error('API request failed:', error)
+        console.error('API request failed:', {
+          endpoint,
+          status: error?.status,
+          message: error?.message,
+          data: error?.data,
+          statusText: error?.statusText,
+          url: error?.url,
+        })
       }
       throw error
     }
@@ -232,7 +299,6 @@ class ApiService {
    * Utilisateur courant (session Laravel). Réponse 200 { user } ou { user: null }.
    */
   async getAuthUser() {
-    await this.getCsrfCookie()
     return this.get('/auth/user', {}, { skipAuthRedirect: true })
   }
 

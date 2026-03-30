@@ -141,11 +141,10 @@ router.beforeEach(async (to, from, next) => {
     await session.hydrate()
   }
 
-  const adminUser = localStorage.getItem('admin_user')
-  const customerUser = localStorage.getItem('customer_user')
-
-  const isAdminLoggedIn = !!adminUser
-  const isCustomerLoggedIn = !!customerUser
+  const serverUser = session.serverUser
+  const hasServerSession = !!serverUser
+  const isAdminLoggedIn = hasServerSession && String(serverUser?.role ?? '').toLowerCase() === 'admin'
+  const isCustomerLoggedIn = hasServerSession && !isAdminLoggedIn
 
   // 1. Protection des routes ADMIN
   // On vérifie si la route commence par /admin ou a meta.requiresAuth
@@ -162,8 +161,6 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // 2. Protection des routes CLIENT (/compte)
-  // Un admin n’a que admin_user en localStorage (hydrate) : sans cette condition il était
-  // renvoyé vers /login alors que la session est valide.
   if (requiresClientAreaAuth(to) && !isCustomerLoggedIn && !isAdminLoggedIn) {
     return next({ name: 'login' })
   }
