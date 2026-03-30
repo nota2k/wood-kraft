@@ -1,0 +1,14 @@
+---
+description: Tests unitaires Vitest pour wood-kraft — suivre docs/UNIT_TESTING.md
+globs: wood-kraft/**/*
+alwaysApply: false
+---
+
+# Tests unitaires wood-kraft
+
+Quand tu travailles sous `wood-kraft/` (Vue, stores, `api.js`, composants) :
+
+1. Lis **`.agents/skills/unit-testing/SKILL.md`** à la racine du workspace pour les patterns généraux.
+2. Applique et **maintiens à jour** **`wood-kraft/docs/UNIT_TESTING.md`** : inventaire des `.spec.js`, tableau « État de la suite », file d’attente.
+3. Après ajout ou modification de tests : `cd wood-kraft && npm run test:unit -- --run`.
+4. Préfère les fichiers `.spec.js` à côté du code testé.
