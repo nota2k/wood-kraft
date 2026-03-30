@@ -36,6 +36,9 @@ const appliedPromoCode = ref('')
 const pricingLoading = ref(false)
 const pricingError = ref('')
 const promoFeedback = ref('')
+const checkoutLoading = ref(false)
+const checkoutFeedback = ref('')
+const paymentSimulation = ref('success')
 const pricing = ref({
     subtotal: 0,
     discount_amount: 0,
@@ -78,6 +81,39 @@ const handleRemovePromoCode = async () => {
     appliedPromoCode.value = ''
     promoFeedback.value = ''
     await recalculatePricing()
+}
+
+const handleConfirmOrder = async () => {
+    if (cartStore.items.length === 0 || !selectedShippingMethodId.value) return
+
+    checkoutLoading.value = true
+    checkoutFeedback.value = ''
+    pricingError.value = ''
+
+    try {
+        const response = await api.confirmCheckout({
+            items: cartStore.items,
+            promoCode: appliedPromoCode.value || null,
+            shippingMethodId: selectedShippingMethodId.value,
+            payment_simulation: paymentSimulation.value
+        })
+
+        if (response.payment_status === 'success') {
+            cartStore.clearCart()
+            appliedPromoCode.value = ''
+            promoCodeInput.value = ''
+            pricing.value = { subtotal: 0, discount_amount: 0, shipping_amount: 0, total: 0 }
+            checkoutFeedback.value = `Commande #${response.order?.order_number || response.order?.id} confirmée.`
+            await router.push({ name: 'account-orders' })
+            return
+        }
+
+        checkoutFeedback.value = response.message || 'Simulation de paiement non validée.'
+    } catch (error) {
+        checkoutFeedback.value = error?.data?.message || 'Impossible de confirmer la commande.'
+    } finally {
+        checkoutLoading.value = false
+    }
 }
 
 const formatPrice = (value) => {
@@ -288,7 +324,17 @@ onMounted(async () => {
                         </p>
                     </div>
 
+                    <div class="cart-view__section">
+                        <label class="cart-view__field-label">Simulation de paiement</label>
+                        <select v-model="paymentSimulation" class="cart-view__input">
+                            <option value="success">Succès</option>
+                            <option value="failed">Refusé</option>
+                            <option value="requires_action">Action requise (3DS)</option>
+                        </select>
+                    </div>
+
                     <div v-if="pricingError" class="cart-view__error">{{ pricingError }}</div>
+                    <div v-if="checkoutFeedback" class="cart-view__feedback">{{ checkoutFeedback }}</div>
 
                     <div class="cart-view__totals">
                         <div class="cart-view__line">
@@ -311,9 +357,10 @@ onMounted(async () => {
                     </div>
                     <button
                         class="cart-view__button cart-view__button--primary"
-                        :disabled="pricingLoading || !selectedShippingMethodId"
+                        :disabled="pricingLoading || checkoutLoading || !selectedShippingMethodId"
+                        @click="handleConfirmOrder"
                     >
-                        Passer la commande
+                        {{ checkoutLoading ? 'Validation...' : 'Passer la commande' }}
                     </button>
                 </div>
             </div>

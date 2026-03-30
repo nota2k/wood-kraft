@@ -11,7 +11,7 @@ _Décisions UI, tokens, parcours utilisateur, URLs de preview, etc._
 <!-- MEMORY_BANK_AUTO_START -->
 ## Métadonnées
 
-- **Dernière génération** : 2026-03-30T22:27:47.584Z
+- **Dernière génération** : 2026-03-30T23:02:46.153Z
 - **Racine app** : `/Users/nellybabillon/Sites/woodkraft-app/wood-kraft` (`wood-kraft`)
 
 ## Stack (extraits package.json)

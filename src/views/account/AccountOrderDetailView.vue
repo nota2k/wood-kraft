@@ -26,26 +26,32 @@
             <h2 class="section-title">Articles commandés</h2>
             <div v-for="item in order.items" :key="item.id" class="product-item">
               <div class="product-img">
-                <img :src="item.product?.images?.[0]?.url" :alt="item.product_name" />
+                <img :src="getProductImage(item)" :alt="getProductName(item)" />
               </div>
               <div class="product-info">
-                <h3 class="product-name">{{ item.product_name }}</h3>
+                <h3 class="product-name">{{ getProductName(item) }}</h3>
                 <p class="product-category">{{ item.product?.categories?.[0]?.name || 'Bois' }}</p>
               </div>
               <div class="product-price">
                 <span class="qty">x{{ item.quantity }}</span>
-                <span class="price">{{ formatPrice(item.price_at_order) }}</span>
+                <span class="price">{{ formatPrice(item.total_price ?? item.unit_price) }}</span>
               </div>
             </div>
 
             <div class="order-summary">
               <div class="summary-line">
                 <span>Sous-total</span>
-                <span>{{ formatPrice(order.total_amount) }}</span>
+                <span>{{ formatPrice(order.subtotal_amount ?? order.total_amount) }}</span>
               </div>
               <div class="summary-line">
                 <span>Livraison</span>
-                <span class="free">Gratuit</span>
+                <span :class="{ free: Number(order.shipping_amount || 0) === 0 }">
+                  {{ Number(order.shipping_amount || 0) === 0 ? 'Gratuit' : formatPrice(order.shipping_amount) }}
+                </span>
+              </div>
+              <div class="summary-line" v-if="Number(order.discount_amount || 0) > 0">
+                <span>Remise</span>
+                <span>- {{ formatPrice(order.discount_amount) }}</span>
               </div>
               <div class="summary-line total">
                 <span>Total</span>
@@ -116,7 +122,19 @@ function formatStatus(status) {
 }
 
 function formatPrice(price) {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price)
+  const amount = Number(price ?? 0)
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(
+    Number.isFinite(amount) ? amount : 0
+  )
+}
+
+function getProductName(item) {
+  return item?.product?.title || `Produit #${item?.product_id ?? ''}`
+}
+
+function getProductImage(item) {
+  const image = item?.product?.images?.[0]
+  return image?.image_path || image?.url || '/favicon.ico'
 }
 
 onMounted(() => fetchOrderDetail())

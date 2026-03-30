@@ -48,10 +48,10 @@
             <tbody>
               <tr v-for="item in order.items" :key="item.id">
                 <td class="product-cell">
-                  <img :src="item.product.images[0]?.image_path" class="product-img" alt="" />
+                  <img :src="getProductImage(item)" class="product-img" :alt="getProductName(item)" />
                   <div class="product-info">
-                    <span class="product-name">{{ item.product.title }}</span>
-                    <span class="product-ref">Réf: {{ item.product.reference }}</span>
+                    <span class="product-name">{{ getProductName(item) }}</span>
+                    <span class="product-ref">Réf: {{ item.product?.reference || 'N/A' }}</span>
                   </div>
                 </td>
                 <td>{{ formatPrice(item.unit_price) }}</td>
@@ -116,7 +116,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/services/api'
-import { ArrowLeft, User, Mail, Phone, Package } from 'lucide-vue-next'
+import { ArrowLeft, User, Mail, Phone } from 'lucide-vue-next'
 
 const route = useRoute()
 const order = ref(null)
@@ -141,13 +141,25 @@ async function updateStatus() {
     await api.put(`/admin/orders/${order.value.id}`, { status: statusToUpdate.value })
     order.value.status = statusToUpdate.value
     // Notification de succès?
-  } catch (error) {
+  } catch {
     alert('Erreur lors de la mise à jour du statut.')
   }
 }
 
 function formatPrice(price) {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price)
+  const amount = Number(price ?? 0)
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(
+    Number.isFinite(amount) ? amount : 0
+  )
+}
+
+function getProductName(item) {
+  return item?.product?.title || `Produit #${item?.product_id ?? ''}`
+}
+
+function getProductImage(item) {
+  const image = item?.product?.images?.[0]
+  return image?.image_path || image?.url || '/favicon.ico'
 }
 
 function getStatusLabel(status) {

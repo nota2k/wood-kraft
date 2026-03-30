@@ -77,7 +77,10 @@ const isOpen = ref(true)
 // mais restons sur tout ouvert pour l'instant.
 
 function formatPrice(price) {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price)
+  const amount = Number(price ?? 0)
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(
+    Number.isFinite(amount) ? amount : 0
+  )
 }
 
 function formatDate(dateString) {

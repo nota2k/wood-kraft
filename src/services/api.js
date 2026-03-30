@@ -330,6 +330,10 @@ class ApiService {
     return this.post('/checkout/pricing', payload)
   }
 
+  async confirmCheckout(payload) {
+    return this.post('/customer/checkout/confirm', payload, { skipAuthRedirect: true })
+  }
+
   // ===== PRODUCTS =====
 
   async getProducts(params = {}) {
