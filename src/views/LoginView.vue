@@ -82,14 +82,13 @@ async function handleSubmit() {
     
     // On stocke l'utilisateur
     localStorage.setItem('customer_user', JSON.stringify(response.user))
-    
-    // Charger le panier persistant
+    window.dispatchEvent(new Event('auth-changed'))
+
+    // Navigation d’abord : le garde-fou router lit localStorage ; loadCart après (évite 401 panier → redirection forcée)
+    await router.push({ name: 'account-dashboard' })
+
     const cartStore = useCartStore()
     await cartStore.loadCart()
-    
-    // Redirection vers le compte
-    window.dispatchEvent(new Event('auth-changed'))
-    router.push({ name: 'account-dashboard' })
   } catch (err) {
     error.value = err.data?.message || 'Identifiants incorrects.'
   } finally {

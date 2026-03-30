@@ -20,7 +20,7 @@ class ApiService {
 
   /**
    * Effectue une requête HTTP
-   * @param {object} options - options fetch ; utiliser skipAuthRedirect: true pour /auth/user (évite une redirection sur visiteur anonyme)
+   * @param {object} options - options fetch ; skipAuthRedirect: true pour certains appels où un 401 est attendu sans redirection
    */
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`
@@ -74,7 +74,10 @@ class ApiService {
       if (response.status === 204) return null
       return await response.json()
     } catch (error) {
-      console.error('API request failed:', error)
+      const quiet401 = skipAuthRedirect && error?.status === 401
+      if (!quiet401) {
+        console.error('API request failed:', error)
+      }
       throw error
     }
   }
@@ -149,29 +152,34 @@ class ApiService {
 
   /**
    * POST request
+   * @param {object} [requestOptions] - ex. { skipAuthRedirect: true }
    */
-  async post(endpoint, data = {}) {
+  async post(endpoint, data = {}, requestOptions = {}) {
     return this.request(endpoint, {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      ...requestOptions,
     })
   }
 
   /**
    * PUT request
+   * @param {object} [requestOptions] - ex. { skipAuthRedirect: true }
    */
-  async put(endpoint, data = {}) {
+  async put(endpoint, data = {}, requestOptions = {}) {
     return this.request(endpoint, {
       method: 'PUT',
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      ...requestOptions,
     })
   }
 
   /**
    * DELETE request
+   * @param {object} [requestOptions] - ex. { skipAuthRedirect: true }
    */
-  async delete(endpoint) {
-    return this.request(endpoint, { method: 'DELETE' })
+  async delete(endpoint, requestOptions = {}) {
+    return this.request(endpoint, { method: 'DELETE', ...requestOptions })
   }
 
   // ===== AUTH =====
@@ -197,16 +205,11 @@ class ApiService {
   }
 
   /**
-   * Utilisateur courant (session Laravel). 401 = anonyme, sans redirection.
+   * Utilisateur courant (session Laravel). Réponse 200 { user } ou { user: null }.
    */
   async getAuthUser() {
     await this.getCsrfCookie()
-    try {
-      return await this.get('/auth/user', {}, { skipAuthRedirect: true })
-    } catch (e) {
-      if (e.status === 401) return null
-      throw e
-    }
+    return this.get('/auth/user')
   }
 
   /** @deprecated utiliser getAuthUser */
@@ -216,15 +219,16 @@ class ApiService {
 
   // ===== CART =====
   async syncCart(items) {
-    return this.post('/customer/cart/sync', { items })
+    // skipAuthRedirect : un 401 ne doit pas faire window.location=/login (efface la session client et casse le flux post-login)
+    return this.post('/customer/cart/sync', { items }, { skipAuthRedirect: true })
   }
 
   async fetchCart() {
-    return this.get('/customer/cart')
+    return this.get('/customer/cart', {}, { skipAuthRedirect: true })
   }
 
   async emptyCart() {
-    return this.delete('/customer/cart')
+    return this.delete('/customer/cart', { skipAuthRedirect: true })
   }
 
   // ===== PRODUCTS =====
