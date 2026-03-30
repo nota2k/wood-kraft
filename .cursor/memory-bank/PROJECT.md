@@ -11,7 +11,7 @@ _Décisions UI, tokens, parcours utilisateur, URLs de preview, etc._
 <!-- MEMORY_BANK_AUTO_START -->
 ## Métadonnées
 
-- **Dernière génération** : 2026-03-30T21:45:17.047Z
+- **Dernière génération** : 2026-03-30T22:27:47.584Z
 - **Racine app** : `/Users/nellybabillon/Sites/woodkraft-app/wood-kraft` (`wood-kraft`)
 
 ## Stack (extraits package.json)
@@ -29,7 +29,7 @@ _Décisions UI, tokens, parcours utilisateur, URLs de preview, etc._
 
 ## Inventaire `src/`
 
-- Fichiers `.vue` : **37**
+- Fichiers `.vue` : **39**
 - Fichiers `.js` : **11**
 - Fichiers `.scss` : **9**
 
@@ -48,6 +48,8 @@ _Décisions UI, tokens, parcours utilisateur, URLs de preview, etc._
 - `admin-product-create`
 - `admin-product-edit`
 - `admin-products`
+- `admin-promo-codes`
+- `admin-shipping-methods`
 - `cart`
 - `home`
 - `login`

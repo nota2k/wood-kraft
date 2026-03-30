@@ -42,6 +42,16 @@
           <ShoppingBag :size="20" />
           <span class="nav-label">Commandes</span>
         </RouterLink>
+        <RouterLink :to="{ name: 'admin-shipping-methods' }" class="nav-item" active-class="active"
+          @click="mobileOpen = false">
+          <Truck :size="20" />
+          <span class="nav-label">Livraisons</span>
+        </RouterLink>
+        <RouterLink :to="{ name: 'admin-promo-codes' }" class="nav-item" active-class="active"
+          @click="mobileOpen = false">
+          <TicketPercent :size="20" />
+          <span class="nav-label">Codes promo</span>
+        </RouterLink>
       </nav>
 
       <div class="sidebar-footer">
@@ -74,7 +84,7 @@ import { useAdminStore } from '@/stores/admin'
 import { useSessionStore } from '@/stores/session'
 import {
   LayoutDashboard, Package, Tag, LogOut,
-  ChevronLeft, ChevronRight, Menu, X, ExternalLink, ShoppingBag
+  ChevronLeft, ChevronRight, Menu, X, ExternalLink, ShoppingBag, Truck, TicketPercent
 } from 'lucide-vue-next'
 
 const router = useRouter()

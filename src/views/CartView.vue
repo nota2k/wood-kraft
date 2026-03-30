@@ -1,8 +1,9 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import { useProductsStore } from '@/stores/products'
+import api from '@/services/api'
 import { Plus, Minus, X, ShoppingBag, ArrowLeft } from 'lucide-vue-next'
 import Breadcrumb from '@/components/Breadcrumb.vue'
 
@@ -24,8 +25,27 @@ const cartItems = computed(() => {
     }).filter(item => item.product)
 })
 
-const totalPrice = computed(() => {
+const subtotalPrice = computed(() => {
     return cartStore.totalPrice(productsStore)
+})
+
+const shippingMethods = ref([])
+const selectedShippingMethodId = ref(null)
+const promoCodeInput = ref('')
+const appliedPromoCode = ref('')
+const pricingLoading = ref(false)
+const pricingError = ref('')
+const promoFeedback = ref('')
+const pricing = ref({
+    subtotal: 0,
+    discount_amount: 0,
+    shipping_amount: 0,
+    total: 0
+})
+
+const selectedShippingMethod = computed(() => {
+    const selectedId = Number(selectedShippingMethodId.value)
+    return shippingMethods.value.find(method => Number(method.id) === selectedId) || null
 })
 
 const handleRemoveItem = (productId, selectedColor) => {
@@ -46,6 +66,74 @@ const handleDecreaseQuantity = (item) => {
 
 const handleContinueShopping = () => {
     router.push('/products')
+}
+
+const handleApplyPromoCode = async () => {
+    appliedPromoCode.value = promoCodeInput.value.trim()
+    await recalculatePricing()
+}
+
+const handleRemovePromoCode = async () => {
+    promoCodeInput.value = ''
+    appliedPromoCode.value = ''
+    promoFeedback.value = ''
+    await recalculatePricing()
+}
+
+const formatPrice = (value) => {
+    return `${Number(value || 0).toFixed(2)} €`
+}
+
+const recalculatePricing = async () => {
+    if (cartStore.items.length === 0) {
+        pricing.value = {
+            subtotal: 0,
+            discount_amount: 0,
+            shipping_amount: 0,
+            total: 0
+        }
+        pricingError.value = ''
+        promoFeedback.value = ''
+        return
+    }
+
+    pricingLoading.value = true
+    pricingError.value = ''
+
+    try {
+        const payload = {
+            items: cartStore.items,
+            promoCode: appliedPromoCode.value || null,
+            shippingMethodId: selectedShippingMethodId.value || null
+        }
+
+        const response = await api.getCheckoutPricing(payload)
+        pricing.value = response
+
+        if (response?.promo_validation) {
+            promoFeedback.value = response.promo_validation.message || ''
+            if (!response.promo_validation.is_valid) {
+                appliedPromoCode.value = ''
+            }
+        } else {
+            promoFeedback.value = ''
+        }
+    } catch (error) {
+        pricingError.value = error?.data?.message || 'Impossible de recalculer le panier pour le moment.'
+    } finally {
+        pricingLoading.value = false
+    }
+}
+
+const loadShippingMethods = async () => {
+    try {
+        shippingMethods.value = await api.getCheckoutShippingMethods()
+        if (shippingMethods.value.length > 0 && !selectedShippingMethodId.value) {
+            selectedShippingMethodId.value = shippingMethods.value[0].id
+        }
+    } catch (error) {
+        pricingError.value = error?.data?.message || 'Impossible de charger les modes de livraison.'
+    }
 }
 
 /**
@@ -70,6 +158,23 @@ const breadcrumbItems = [
     { label: 'Produits', to: '/products' },
     { label: 'Panier' }
 ]
+
+watch(
+    () => cartStore.items,
+    () => {
+        void recalculatePricing()
+    },
+    { deep: true }
+)
+
+watch(selectedShippingMethodId, () => {
+    void recalculatePricing()
+})
+
+onMounted(async () => {
+    await loadShippingMethods()
+    await recalculatePricing()
+})
 </script>
 
 <template>
@@ -143,11 +248,71 @@ const breadcrumbItems = [
                 </div>
 
                 <div class="cart-view__summary">
-                    <div class="cart-view__total">
-                        <span class="cart-view__total-label">Total</span>
-                        <span class="cart-view__total-price">{{ totalPrice.toFixed(2) }} €</span>
+                    <div class="cart-view__section">
+                        <label class="cart-view__field-label">Code promo</label>
+                        <div class="cart-view__promo">
+                            <input
+                                v-model="promoCodeInput"
+                                type="text"
+                                class="cart-view__input"
+                                placeholder="Ex: BIENVENUE10"
+                            />
+                            <button class="cart-view__button" @click="handleApplyPromoCode">
+                                Appliquer
+                            </button>
+                        </div>
+                        <p v-if="promoFeedback" class="cart-view__feedback">{{ promoFeedback }}</p>
+                        <button
+                            v-if="appliedPromoCode"
+                            class="cart-view__link"
+                            @click="handleRemovePromoCode"
+                        >
+                            Retirer le code promo
+                        </button>
                     </div>
-                    <button class="cart-view__button cart-view__button--primary">
+
+                    <div class="cart-view__section">
+                        <label class="cart-view__field-label">Mode de livraison</label>
+                        <select v-model="selectedShippingMethodId" class="cart-view__input">
+                            <option :value="null">Sélectionnez un mode</option>
+                            <option
+                                v-for="method in shippingMethods"
+                                :key="method.id"
+                                :value="method.id"
+                            >
+                                {{ method.name }} - {{ formatPrice(method.price) }}
+                            </option>
+                        </select>
+                        <p v-if="selectedShippingMethod?.free_from_amount" class="cart-view__feedback">
+                            Livraison offerte dès {{ formatPrice(selectedShippingMethod.free_from_amount) }}.
+                        </p>
+                    </div>
+
+                    <div v-if="pricingError" class="cart-view__error">{{ pricingError }}</div>
+
+                    <div class="cart-view__totals">
+                        <div class="cart-view__line">
+                            <span>Sous-total</span>
+                            <span>{{ formatPrice(pricing.subtotal ?? subtotalPrice) }}</span>
+                        </div>
+                        <div class="cart-view__line">
+                            <span>Remise</span>
+                            <span>- {{ formatPrice(pricing.discount_amount) }}</span>
+                        </div>
+                        <div class="cart-view__line">
+                            <span>Livraison</span>
+                            <span>{{ formatPrice(pricing.shipping_amount) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="cart-view__total">
+                        <span class="cart-view__total-label">Total final</span>
+                        <span class="cart-view__total-price">{{ formatPrice(pricing.total ?? subtotalPrice) }}</span>
+                    </div>
+                    <button
+                        class="cart-view__button cart-view__button--primary"
+                        :disabled="pricingLoading || !selectedShippingMethodId"
+                    >
                         Passer la commande
                     </button>
                 </div>
@@ -367,6 +532,70 @@ const breadcrumbItems = [
         top: 120px;
     }
 
+    &__section {
+        margin-bottom: var(--padding-sm);
+    }
+
+    &__field-label {
+        display: block;
+        font-size: var(--font-sm);
+        margin-bottom: 6px;
+        color: var(--color-marron);
+    }
+
+    &__promo {
+        display: flex;
+        gap: 8px;
+    }
+
+    &__input {
+        width: 100%;
+        border: var(--border);
+        border-radius: var(--border-radius);
+        background: #fff;
+        padding: 10px 12px;
+        font-size: var(--font-sm);
+        color: var(--color-marron);
+    }
+
+    &__feedback {
+        margin: 8px 0 0;
+        font-size: var(--font-xs);
+        color: var(--color-marron);
+    }
+
+    &__link {
+        margin-top: 6px;
+        border: none;
+        background: none;
+        text-decoration: underline;
+        padding: 0;
+        cursor: pointer;
+        color: var(--color-marron);
+        font-size: var(--font-xs);
+    }
+
+    &__error {
+        font-size: var(--font-xs);
+        margin-bottom: 8px;
+        color: #c43939;
+    }
+
+    &__totals {
+        border-top: var(--border);
+        border-bottom: var(--border);
+        padding: 10px 0;
+        margin-bottom: 10px;
+    }
+
+    &__line {
+        display: flex;
+        justify-content: space-between;
+        font-size: var(--font-sm);
+        margin-bottom: 6px;
+        color: var(--color-marron);
+    }
+
     &__total {
         display: flex;
         justify-content: space-between;
@@ -399,6 +628,11 @@ const breadcrumbItems = [
 
         &:hover {
             opacity: 0.9;
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         &--primary {

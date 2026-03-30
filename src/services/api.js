@@ -321,6 +321,15 @@ class ApiService {
     return this.delete('/customer/cart', { skipAuthRedirect: true })
   }
 
+  // ===== CHECKOUT =====
+  async getCheckoutShippingMethods() {
+    return this.get('/checkout/shipping-methods')
+  }
+
+  async getCheckoutPricing(payload) {
+    return this.post('/checkout/pricing', payload)
+  }
+
   // ===== PRODUCTS =====
 
   async getProducts(params = {}) {
@@ -376,6 +385,40 @@ class ApiService {
 
   async getStats() {
     return this.get('/admin/stats')
+  }
+
+  // ===== ADMIN SHIPPING METHODS =====
+  async getAdminShippingMethods(params = {}) {
+    return this.get('/admin/shipping-methods', params)
+  }
+
+  async createAdminShippingMethod(payload) {
+    return this.post('/admin/shipping-methods', payload)
+  }
+
+  async updateAdminShippingMethod(id, payload) {
+    return this.put(`/admin/shipping-methods/${id}`, payload)
+  }
+
+  async deleteAdminShippingMethod(id) {
+    return this.delete(`/admin/shipping-methods/${id}`)
+  }
+
+  // ===== ADMIN PROMO CODES =====
+  async getAdminPromoCodes(params = {}) {
+    return this.get('/admin/promo-codes', params)
+  }
+
+  async createAdminPromoCode(payload) {
+    return this.post('/admin/promo-codes', payload)
+  }
+
+  async updateAdminPromoCode(id, payload) {
+    return this.put(`/admin/promo-codes/${id}`, payload)
+  }
+
+  async deleteAdminPromoCode(id) {
+    return this.delete(`/admin/promo-codes/${id}`)
   }
 }
 

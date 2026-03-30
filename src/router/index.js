@@ -128,6 +128,16 @@ const router = createRouter({
           name: 'admin-order-detail',
           component: () => import('../views/admin/AdminOrderDetailView.vue'),
         },
+        {
+          path: 'shipping-methods',
+          name: 'admin-shipping-methods',
+          component: () => import('../views/admin/AdminShippingMethodsView.vue'),
+        },
+        {
+          path: 'promo-codes',
+          name: 'admin-promo-codes',
+          component: () => import('../views/admin/AdminPromoCodesView.vue'),
+        },
       ],
     },
   ],
